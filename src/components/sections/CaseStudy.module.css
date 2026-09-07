@@ -1,0 +1,132 @@
+.stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 calc(var(--unit) * 4);
+}
+
+.stage + .stage {
+  margin-top: calc(var(--unit) * 5);
+}
+
+.rail {
+  position: relative;
+  width: 1px;
+  background: var(--rule);
+  justify-self: center;
+}
+
+.rail::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -4px;
+  width: 9px;
+  height: 9px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+}
+
+.final .rail::before {
+  background: var(--signal);
+  border-color: var(--signal);
+}
+
+.stage h3 {
+  font-size: 19px;
+}
+
+.who {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.txt {
+  padding-bottom: calc(var(--unit) * 3);
+}
+
+.txt p + p,
+.txt .who + p {
+  margin-top: calc(var(--unit) * 2);
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+@media (max-width: 640px) {
+  .stage {
+    grid-template-columns: 1fr;
+  }
+
+  .rail {
+    display: none;
+  }
+}
+
+.basis {
+  margin: calc(var(--unit) * 6) 0 0;
+  padding: 0;
+}
+
+.basis blockquote {
+  margin: 0;
+  padding: calc(var(--unit) * 3) 0 calc(var(--unit) * 3) calc(var(--unit) * 4);
+  border-left: 2px solid var(--ink);
+}
+
+.basis blockquote p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink);
+  max-width: 58ch;
+}
+
+.basis figcaption {
+  margin-top: calc(var(--unit) * 2.5);
+  padding-left: calc(var(--unit) * 4);
+  font-size: 13.5px;
+  color: var(--muted);
+  max-width: 58ch;
+  line-height: 1.65;
+}
+
+@media (max-width: 640px) {
+  .basis blockquote,
+  .basis figcaption {
+    padding-left: calc(var(--unit) * 2.5);
+  }
+
+  .basis blockquote p {
+    font-size: 16px;
+  }
+}
+
+.implTitle {
+  font-size: 17px;
+}
+
+.result {
+  margin-top: calc(var(--unit) * 3);
+  border-left: 2px solid var(--signal);
+  padding: 2px 0 2px calc(var(--unit) * 3);
+}
+
+.result li {
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.result li + li {
+  margin-top: 8px;
+}
+
+.result b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.rule {
+  margin-top: calc(var(--unit) * 3.5);
+  color: var(--ink-2);
+  max-width: 62ch;
+}

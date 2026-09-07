@@ -1,0 +1,445 @@
+/* ── 단계 표시 ─────────────────────────────────────────────── */
+.steps {
+  display: flex;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  margin-bottom: calc(var(--unit) * 5);
+}
+
+.steps li {
+  flex: 1;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: var(--muted);
+  border-right: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.steps li:last-child {
+  border-right: 0;
+}
+
+.steps li[aria-current="step"] {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+}
+
+.stepName {
+  min-width: 0;
+}
+
+.stepName b {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.stepTag {
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.stepTag[data-set="true"] {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: #fff;
+}
+
+.steps li[aria-current="step"] .stepTag {
+  border-color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.steps li[aria-current="step"] .stepTag[data-set="true"] {
+  background: #fff;
+  border-color: #fff;
+  color: var(--signal);
+}
+
+@media (max-width: 560px) {
+  .steps {
+    flex-direction: column;
+  }
+
+  .steps li {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .steps li:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* ── 레이아웃 ──────────────────────────────────────────────── */
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: calc(var(--unit) * 5);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.cardHead {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cardHead h2 {
+  font-size: 15px;
+}
+
+.cardHead span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cardBody {
+  padding: 18px;
+}
+
+.hint {
+  margin-top: calc(var(--unit) * 2);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 18px;
+  border-top: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #0d1620;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn:disabled:hover {
+  background: var(--ink);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ink);
+}
+
+.ghost:hover {
+  background: var(--panel);
+}
+
+/* ── 폼 ────────────────────────────────────────────────────── */
+.formAlert {
+  margin: 0;
+  padding: 11px 18px;
+  background: #f7ecec;
+  border-bottom: 1px solid var(--rule);
+  color: var(--err);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.section {
+  border: 1px solid var(--rule-soft);
+  margin-bottom: 14px;
+}
+
+.section > h3 {
+  font-size: 14px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.section > h3 em {
+  font-style: normal;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.fields {
+  padding: 14px;
+}
+
+.field + .field {
+  margin-top: 13px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.req {
+  color: var(--err);
+  font-weight: 400;
+  margin-left: 3px;
+}
+
+.driverBadge {
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--warn);
+  background: var(--warn-bg);
+  padding: 1px 6px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 14px;
+  border: 1px solid var(--rule);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 0;
+}
+
+.field.invalid input,
+.field.invalid select {
+  border-color: var(--err);
+}
+
+.note {
+  margin-top: 5px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.derived .note {
+  color: var(--warn);
+}
+
+.err {
+  margin-top: 5px;
+  font-size: 12.5px;
+  color: var(--err);
+}
+
+/* ── 해석 경로 패널 ─────────────────────────────────────────── */
+.trace {
+  border: 1px solid var(--rule);
+  background: var(--panel);
+  position: sticky;
+  top: calc(18px + var(--safe-top));
+}
+
+.trace h2 {
+  font-size: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.traceBody {
+  padding: 14px 16px;
+}
+
+.traceRow + .traceRow {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.traceKey {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.dyn .traceKey {
+  color: var(--warn);
+}
+
+.traceValue {
+  font-size: 13.5px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.dim {
+  color: var(--muted);
+}
+
+.traceLog {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.traceLog ul {
+  margin-top: 6px;
+  max-height: 170px;
+  overflow-y: auto;
+}
+
+.traceLog li {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  line-height: 1.55;
+}
+
+.traceLog li:last-child {
+  border-bottom: 0;
+}
+
+/* ── 초기화 확인 다이얼로그 ─────────────────────────────────── */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 32, 43, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 10;
+}
+
+.dialog {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  max-width: 420px;
+  width: 100%;
+}
+
+.dialog h2 {
+  font-size: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.dialogBody {
+  padding: 18px 20px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.dialogBody ul {
+  margin-top: 10px;
+}
+
+.dialogBody li {
+  font-size: 13.5px;
+  padding-left: 14px;
+  position: relative;
+  color: var(--ink);
+}
+
+.dialogBody li + li {
+  margin-top: 4px;
+}
+
+.dialogBody li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 6px;
+  height: 1px;
+  background: var(--muted);
+}
+
+.dialogFoot {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 14px 20px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ── 완료 ──────────────────────────────────────────────────── */
+.done {
+  padding: calc(var(--unit) * 5) 18px;
+}
+
+.done h3 {
+  font-size: 16px;
+}
+
+.done p {
+  margin-top: 10px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.done dl {
+  margin: 18px 0 0;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.doneRow {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 14px;
+}
+
+.doneRow dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.doneRow dd {
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .doneRow {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}

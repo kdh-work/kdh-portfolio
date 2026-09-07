@@ -1,0 +1,37 @@
+.footer {
+  padding: calc(var(--unit) * 8) 0 calc(var(--unit) * 10);
+}
+
+.heading {
+  font-size: clamp(21px, 2.6vw, 27px);
+}
+
+.contact {
+  margin-top: calc(var(--unit) * 4);
+  display: flex;
+  gap: calc(var(--unit) * 6);
+  flex-wrap: wrap;
+}
+
+.contact span {
+  display: block;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.contact a,
+.contact p {
+  font-size: 15.5px;
+  font-weight: 500;
+}
+
+.pending {
+  color: var(--muted);
+}
+
+.updated {
+  margin-top: calc(var(--unit) * 6);
+  font-size: 13px;
+  color: var(--muted);
+}

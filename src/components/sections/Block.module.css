@@ -1,0 +1,20 @@
+/* 일반 섹션의 공통 프레임: 제목 · 리드 · 본문 간격 */
+.block {
+  padding: calc(var(--unit) * 9) 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.heading {
+  font-size: clamp(23px, 3vw, 31px);
+  max-width: 26ch;
+}
+
+.lede {
+  margin-top: calc(var(--unit) * 2.5);
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.body {
+  margin-top: calc(var(--unit) * 6);
+}

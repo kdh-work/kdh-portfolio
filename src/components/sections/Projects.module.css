@@ -1,0 +1,74 @@
+.list {
+  margin-top: calc(var(--unit) * 6);
+  border-top: 1px solid var(--rule);
+}
+
+.item {
+  border-bottom: 1px solid var(--rule-soft);
+  padding: calc(var(--unit) * 4) 0;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: calc(var(--unit) * 4);
+}
+
+@media (max-width: 760px) {
+  .item {
+    grid-template-columns: 1fr;
+    gap: calc(var(--unit) * 2);
+  }
+}
+
+.when {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.when b {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.name {
+  font-size: 18px;
+}
+
+.role {
+  margin-top: 7px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.points {
+  margin-top: calc(var(--unit) * 2);
+}
+
+.points li {
+  position: relative;
+  padding-left: 15px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.points li + li {
+  margin-top: 7px;
+}
+
+.points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 6px;
+  height: 1px;
+  background: var(--muted);
+}
+
+.stack {
+  margin-top: calc(var(--unit) * 2.5);
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.65;
+}

@@ -1,0 +1,117 @@
+/* ── 디자인 토큰 ───────────────────────────────────────────────
+   회사 프로젝트가 조합 매트릭스를 다루는 일이었으므로,
+   격자와 하이라인을 화면의 시각적 정체성으로 삼는다.
+   강조는 딥 틸 한 색으로만 주고, 앰버는 "반응형 조건" 표시에만 쓴다. */
+:root {
+  --ink: #16202b;
+  --ink-2: #42505f;
+  --muted: #6d7b8a;
+  --paper: #fbfbfc;
+  --panel: #f2f4f6;
+  --rule: #d3d9e0;
+  --rule-soft: #e4e8ec;
+  --signal: #0f5c4e;
+  --signal-bg: #e6efec;
+  --warn: #8a5000;
+  --warn-bg: #fbf3e4;
+  --err: #9c2b2b;
+
+  --unit: 8px;
+  --maxw: 1080px;
+
+  /* 안드로이드·iOS WebView 에서 네이티브가 값을 주입할 자리.
+     브라우저에서는 0 으로 동작한다. */
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.25;
+}
+
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--signal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(15, 92, 78, 0.32);
+}
+
+a:hover {
+  border-bottom-color: var(--signal);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* 스크린 리더 전용 텍스트 */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* 페이지 폭 컨테이너 */
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

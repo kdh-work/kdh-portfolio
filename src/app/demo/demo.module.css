@@ -1,0 +1,106 @@
+.top {
+  border-bottom: 1px solid var(--rule);
+}
+
+.topInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.mark {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.topInner a {
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: none;
+}
+
+.topInner a:hover {
+  text-decoration: underline;
+}
+
+.intro {
+  padding: calc(var(--unit) * 7) 0 calc(var(--unit) * 5);
+}
+
+.intro h1 {
+  font-size: clamp(26px, 4.2vw, 40px);
+  max-width: 24ch;
+  font-weight: 800;
+}
+
+.lede {
+  margin-top: calc(var(--unit) * 3);
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.lede + .lede {
+  margin-top: calc(var(--unit) * 2);
+}
+
+.disclosure {
+  margin-top: calc(var(--unit) * 4);
+  padding: 14px 18px;
+  background: var(--panel);
+  border-left: 2px solid var(--muted);
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 66ch;
+}
+
+.layers {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+  padding: calc(var(--unit) * 5) 0;
+}
+
+.layers h2 {
+  font-size: 18px;
+}
+
+.layers ol {
+  margin-top: calc(var(--unit) * 3);
+  display: grid;
+  gap: calc(var(--unit) * 2);
+}
+
+.layers li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ink);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.tagReactive {
+  background: var(--warn);
+}
+
+.layers b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.stage {
+  padding: calc(var(--unit) * 7) 0 calc(var(--unit) * 10);
+}

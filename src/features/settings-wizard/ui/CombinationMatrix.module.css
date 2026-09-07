@@ -1,0 +1,62 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  background: var(--paper);
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--rule);
+  padding: 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.table thead th {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 9px 4px;
+}
+
+.table tbody th {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  padding: 0 12px;
+  color: var(--ink);
+  width: 31%;
+}
+
+.cell {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  padding: 6px;
+}
+
+.cell:hover {
+  background: var(--signal-bg);
+  color: var(--signal);
+}
+
+.cell[aria-pressed="true"] {
+  background: var(--signal);
+  color: #fff;
+  font-weight: 600;
+}
+
+.cell:disabled {
+  cursor: default;
+  color: #aab3bc;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 5px,
+    var(--rule-soft) 5px 6px
+  );
+}

@@ -1,0 +1,44 @@
+.top {
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.wordmark span {
+  font-weight: 300;
+  color: var(--muted);
+  margin-left: 10px;
+  letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  font-size: 14px;
+  color: var(--ink-2);
+  border-bottom: none;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: var(--signal);
+}

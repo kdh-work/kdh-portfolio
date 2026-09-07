@@ -1,0 +1,32 @@
+.hero {
+  padding: calc(var(--unit) * 9) 0 calc(var(--unit) * 7);
+}
+
+.headline {
+  font-size: clamp(30px, 5.4vw, 52px);
+  font-weight: 800;
+  max-width: 22ch;
+}
+
+.lede {
+  margin-top: calc(var(--unit) * 3);
+  font-size: clamp(16px, 1.7vw, 18px);
+  color: var(--ink-2);
+  max-width: 58ch;
+}
+
+.meta {
+  margin-top: calc(var(--unit) * 4);
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.meta b {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+}
