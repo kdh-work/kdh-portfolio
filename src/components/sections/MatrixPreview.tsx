@@ -21,7 +21,7 @@ export function MatrixPreview() {
 
   return (
     <section className={styles.demo} aria-labelledby="demo-h">
-      <div className={`wrap ${styles.inner}`}>
+      <div className="wrap">
         <div className={styles.head}>
           <h2 id="demo-h">{copy.title}</h2>
           <p>{copy.lede}</p>

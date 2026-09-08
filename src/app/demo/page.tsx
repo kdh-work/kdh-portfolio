@@ -15,20 +15,24 @@ export default function DemoPage() {
   return (
     <>
       <header className={styles.top}>
-        <div className={`wrap ${styles.topInner}`}>
-          <span className={styles.mark}>{profile.name} · 설정 위저드 데모</span>
-          <Link href="/">포트폴리오로 돌아가기</Link>
+        <div className="wrap">
+          <div className={styles.topInner}>
+            <span className={styles.mark}>{profile.name} · 설정 위저드 데모</span>
+            <Link href="/">포트폴리오로 돌아가기</Link>
+          </div>
         </div>
       </header>
 
-      <div className={`wrap ${styles.intro}`}>
-        <h1>{demoIntro.title}</h1>
-        {demoIntro.paragraphs.map((paragraph) => (
-          <p key={paragraph} className={styles.lede}>
-            {paragraph}
-          </p>
-        ))}
-        <p className={styles.disclosure}>{demoIntro.disclosure}</p>
+      <div className={styles.intro}>
+        <div className="wrap">
+          <h1>{demoIntro.title}</h1>
+          {demoIntro.paragraphs.map((paragraph) => (
+            <p key={paragraph} className={styles.lede}>
+              {paragraph}
+            </p>
+          ))}
+          <p className={styles.disclosure}>{demoIntro.disclosure}</p>
+        </div>
       </div>
 
       <div className={styles.layers}>

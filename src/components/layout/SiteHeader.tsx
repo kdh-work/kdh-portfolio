@@ -13,20 +13,22 @@ const NAV = [
 export function SiteHeader() {
   return (
     <header className={styles.top}>
-      <div className={`wrap ${styles.inner}`}>
-        <p className={styles.wordmark}>
-          {profile.name}
-          <span>{profile.role}</span>
-        </p>
-        <nav aria-label="문서 내 이동">
-          <ul className={styles.nav}>
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+      <div className="wrap">
+        <div className={styles.inner}>
+          <p className={styles.wordmark}>
+            {profile.name}
+            <span>{profile.role}</span>
+          </p>
+          <nav aria-label="문서 내 이동">
+            <ul className={styles.nav}>
+              {NAV.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href}>{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
   );
