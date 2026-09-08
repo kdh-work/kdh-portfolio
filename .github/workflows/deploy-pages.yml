@@ -28,10 +28,8 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      # 저장소에 Pages 가 아직 켜져 있지 않으면 켠다 (Source: GitHub Actions)
+      # 전제: 저장소 Settings → Pages → Source 가 "GitHub Actions" 로 켜져 있어야 한다.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - run: npm ci
       - run: npm run build
