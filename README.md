@@ -6,10 +6,22 @@ Next.js 16 App Router · TypeScript · CSS Modules
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # 프로덕션 빌드
+npm run dev        # http://localhost:3000/kdh-portfolio
+npm run build      # 정적 빌드 → out/
 npm run typecheck  # 타입 검사
 ```
+
+Node 22 이상이 필요하다 (`.nvmrc` 참고, `nvm use`).
+
+## 배포 — GitHub Pages
+
+`main` 에 푸시하면 `.github/workflows/deploy-pages.yml` 이 빌드해서 Pages 에 올린다.
+공개 주소는 `https://kdh-work.github.io/kdh-portfolio/`.
+
+- 사이트가 `/kdh-portfolio` 하위 경로에 놓이므로 `next.config.ts` 의 `basePath` 가 켜져 있다.
+  저장소 이름을 바꾸면 이 값을 같이 바꾼다. 루트 도메인으로 옮기면 `""` 로 비운다.
+- `next/image` 의 `src` 에는 basePath 가 자동으로 붙지 않아 `src/lib/paths.ts` 의 `withBasePath` 로 붙인다.
+- `public/.nojekyll` 은 Pages 가 `_next` 폴더를 무시하지 않게 하는 빈 파일이다.
 
 ## 구조
 
@@ -75,6 +87,7 @@ public/assets/             스크린샷 (WebP, 1620px)
 
 - [x] 섹션 컴포넌트 이식: Hero · CareerSummary · MatrixPreview · CaseStudy · WorkProjects · TechStack · Contact
 - [x] 위저드 UI: StepTabs · CombinationMatrix · SectionForm · FieldControl · TracePanel · ResetDialog
+- [x] GitHub Pages 배포 워크플로우
 - [ ] 이력서·경력기술서 PDF 연결 (`profile.docsHref` 를 채우면 연락 섹션에 링크가 나타난다)
 - [ ] 모델 계층 단위 테스트 (Vitest) — `resolveSections`, `rules`
 - [ ] WebView 셸 연동: 안드로이드 뒤로 가기 ↔ 히스토리, safe-area 주입, 공유 시트

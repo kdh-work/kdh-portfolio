@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { Shot } from "@/content/types";
+import { withBasePath } from "@/lib/paths";
 import { useLightbox } from "./Lightbox";
 import styles from "./ShotGrid.module.css";
 
@@ -22,7 +23,7 @@ export function ShotGrid({ shots, note }: Props) {
               aria-label={`${shot.caption} 확대해서 보기`}
             >
               <Image
-                src={shot.src}
+                src={withBasePath(shot.src)}
                 width={shot.width}
                 height={shot.height}
                 alt={shot.alt}

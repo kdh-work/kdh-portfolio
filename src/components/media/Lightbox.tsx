@@ -12,6 +12,7 @@ import {
 } from "react";
 import Image from "next/image";
 import type { Shot } from "@/content/types";
+import { withBasePath } from "@/lib/paths";
 import styles from "./Lightbox.module.css";
 
 type OpenArgs = { shots: Shot[]; index: number };
@@ -96,7 +97,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
 
           <figure className={styles.frame}>
             <Image
-              src={current.src}
+              src={withBasePath(current.src)}
               width={current.width}
               height={current.height}
               alt={current.alt}

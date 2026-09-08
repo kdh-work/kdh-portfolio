@@ -1,12 +1,22 @@
 import type { NextConfig } from "next";
 
+/**
+ * GitHub Pages 는 사이트를 `https://<계정>.github.io/<저장소>/` 하위 경로에 둔다.
+ * 저장소 이름이 바뀌면 이 값만 고친다. 루트 도메인(Vercel, 사용자 도메인)으로 옮기면 "" 로 비운다.
+ */
+const basePath = "/kdh-portfolio";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Netlify Drop 등 정적 호스팅용. `next build` 결과가 out/ 에 순수 HTML·CSS·JS 로 나온다.
-  // 서버 API 라우트를 추가하게 되면 이 옵션은 제거하고 Netlify 의 Next.js 런타임으로 배포한다.
+  // GitHub Pages 등 정적 호스팅용. `next build` 결과가 out/ 에 순수 HTML·CSS·JS 로 나온다.
+  // 서버 API 라우트를 추가하게 되면 이 옵션은 제거하고 서버가 있는 호스팅으로 옮긴다.
   output: "export",
-  // 정적 호스팅(GitHub Pages 등)으로도 내보낼 수 있도록 이미지 최적화를 끈다.
-  // Vercel 전용으로만 쓸 경우 이 옵션을 지우면 자동 최적화가 켜진다.
+  basePath,
+  // /demo 를 demo/index.html 로 내보낸다. 확장자 없는 주소를 알아서 연결해 주지 않는 정적 호스팅에서도 동작한다.
+  trailingSlash: true,
+  // next/image 의 src 에는 basePath 가 자동으로 붙지 않으므로, 이미지 컴포넌트가 이 값을 읽어 직접 붙인다.
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
+  // 정적 호스팅에서는 이미지 최적화 서버가 없으므로 끈다.
   images: { unoptimized: true },
 };
 
