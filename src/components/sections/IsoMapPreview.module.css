@@ -1,0 +1,32 @@
+.demo {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+  padding: calc(var(--unit) * 6) 0;
+}
+
+.head {
+  max-width: 60ch;
+  margin-bottom: calc(var(--unit) * 4);
+}
+
+.head h2 {
+  font-size: clamp(21px, 2.6vw, 27px);
+}
+
+.head p {
+  margin-top: calc(var(--unit) * 2);
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+.note {
+  margin-top: calc(var(--unit) * 3);
+  max-width: 72ch;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.note + .note {
+  margin-top: calc(var(--unit) * 1.5);
+}
