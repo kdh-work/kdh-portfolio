@@ -1,0 +1,163 @@
+/* 라벨 배치 검토 도식.
+   관계도 렌더러와 색을 공유하지 않고 파랑 계열 하나로 고정한다 — 여기서 비교
+   대상은 색이 아니라 배치다. */
+
+.root {
+  --study-face: #dbe7f3;
+  --study-side: #c4d8ea;
+  --study-line: #3d6b95;
+  --study-label: #33587d;
+  --study-floor: #eceff2;
+}
+
+.lede {
+  max-width: 66ch;
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+.grid {
+  margin-top: calc(var(--unit) * 3);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: calc(var(--unit) * 2.5);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.cardChosen {
+  border-color: var(--signal);
+}
+
+.shot {
+  background: var(--study-floor);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.stage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 14px 0;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+
+.badge {
+  flex: none;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--signal);
+  border-radius: 2px;
+}
+
+.note {
+  padding: 6px 14px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.closing {
+  margin-top: calc(var(--unit) * 3);
+  padding: 14px 18px;
+  background: var(--panel);
+  border-left: 2px solid var(--signal);
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 72ch;
+}
+
+/* ── 도식 요소 ───────────────────────────────────────────── */
+
+.slab {
+  fill: var(--study-floor);
+  stroke: #dfe4e9;
+  stroke-width: 1;
+}
+
+.rail {
+  fill: none;
+  stroke: var(--study-line);
+  stroke-width: 5;
+  stroke-opacity: 0.85;
+  stroke-linejoin: round;
+}
+
+.side {
+  fill: var(--study-side);
+  stroke: var(--study-line);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.top {
+  fill: var(--study-face);
+  stroke: var(--study-line);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.shadeLeft {
+  fill: #000;
+  opacity: 0.05;
+}
+
+.shadeRight {
+  fill: #000;
+  opacity: 0.12;
+}
+
+/* 기존 방식의 진한 탭 */
+.plate {
+  fill: var(--study-line);
+}
+
+/* 채택안의 계열 색 명판 */
+.plateTinted {
+  fill: var(--study-face);
+  stroke: var(--study-line);
+  stroke-width: 1;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: var(--study-label);
+  /* SVG 의 stroke-width 기본값이 1 이라 명시적으로 끈다 — 안 끄면 글자 획이 깎인다. */
+  stroke: none;
+}
+
+/* 명판 없이 글자 외곽선만으로 레일을 가리는 안. 획 사이로 레일이 비치는 것을
+   보여주기 위한 것이므로 두께를 실제 검토했던 값(4.5px)으로 둔다. */
+.labelHalo {
+  composes: label;
+  stroke: var(--study-floor);
+  stroke-width: 4.5;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+/* 진한 탭 위에 얹힌 흰 글자 */
+.labelOnSolid {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: var(--paper);
+}

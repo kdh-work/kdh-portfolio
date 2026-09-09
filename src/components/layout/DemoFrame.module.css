@@ -104,3 +104,15 @@
 .stage {
   padding: calc(var(--unit) * 7) 0 calc(var(--unit) * 10);
 }
+
+/* 검토 기록 섹션 — 데모 아래에 붙는다 */
+.study {
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+  padding: calc(var(--unit) * 7) 0 calc(var(--unit) * 10);
+}
+
+.study h2 {
+  font-size: 20px;
+  margin-bottom: calc(var(--unit) * 2);
+}

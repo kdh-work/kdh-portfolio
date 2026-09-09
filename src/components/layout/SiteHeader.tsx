@@ -4,6 +4,7 @@ import styles from "./SiteHeader.module.css";
 const NAV = [
   { href: "#career", label: "경력" },
   { href: "#case", label: "사례 연구" },
+  { href: "#map", label: "자원 관계도" },
   { href: "#work", label: "실무 프로젝트" },
   { href: "#personal", label: "개인 프로젝트" },
   { href: "#stack", label: "사용 기술" },

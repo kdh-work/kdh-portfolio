@@ -1,0 +1,59 @@
+/* WebGL 렌더러 레이어.
+   캔버스와 HTML 라벨 오버레이를 겹쳐 둔다 — 박스 이름은 텍스처가 아니라
+   진짜 글자로 남기기 위해 CSS2DRenderer 를 쓴다. */
+
+.root {
+  position: relative;
+  margin: 0 auto;
+  /* 드래그 중 브라우저 스크롤·확대 제스처가 끼어들지 않게 한다 */
+  touch-action: none;
+}
+
+.layer,
+.labelLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas {
+  display: block;
+}
+
+/* 라벨 오버레이는 포인터를 먹지 않는다 — 레이캐스터가 캔버스로 받아야 한다 */
+.labelLayer {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 박스 위 이름. SVG 판의 `.nodeLabel` / `.nodeSubLabel` 과 같은 크기·색이다. */
+.nodeLabel {
+  transform: translate(-50%, -100%);
+  text-align: center;
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.nodeLabel strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.nodeLabel span {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* SVG 판의 `.svgRotatable` / `.svgDragging` 과 같은 커서 */
+.rotatable {
+  cursor: grab;
+}
+
+.dragging {
+  cursor: grabbing;
+}

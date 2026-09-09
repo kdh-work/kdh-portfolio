@@ -1,0 +1,64 @@
+.lede {
+  max-width: 70ch;
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+/* 표는 좁은 화면에서 자기 안에서만 가로 스크롤한다 — 페이지가 밀리지 않게. */
+.tableWrap {
+  margin-top: calc(var(--unit) * 3);
+  overflow-x: auto;
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.table th,
+.table td {
+  padding: 11px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.table thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--panel);
+  white-space: nowrap;
+}
+
+.table tbody th {
+  width: 6.5em;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.table tbody td {
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.table tr:last-child th,
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.closing {
+  margin-top: calc(var(--unit) * 3);
+  padding: 14px 18px;
+  background: var(--panel);
+  border-left: 2px solid var(--signal);
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 74ch;
+}

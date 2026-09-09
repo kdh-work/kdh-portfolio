@@ -4,7 +4,7 @@ import { layers } from "@/content/caseStudy";
 import { demoIntro } from "@/content/demo";
 import { profile } from "@/content/profile";
 import { Wizard } from "@/features/settings-wizard/ui/Wizard";
-import styles from "./demo.module.css";
+import styles from "@/components/layout/DemoFrame.module.css";
 
 export const metadata: Metadata = {
   title: `설정 위저드 데모 — ${profile.name}`,
