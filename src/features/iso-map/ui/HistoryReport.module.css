@@ -1,0 +1,188 @@
+/* 회전·확대·이동 구현 기록.
+   다른 검토 기록이 대안을 나란히 놓는 격자라면, 이쪽은 증상에서 원인으로
+   내려가는 세로 흐름이다. 라운드마다 증상을 굵게 세우고 원인·고침을 그 아래에
+   들여 쓴다. */
+
+.lede {
+  max-width: 70ch;
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+.rounds {
+  margin-top: calc(var(--unit) * 3);
+  display: grid;
+  gap: calc(var(--unit) * 2);
+  padding: 0;
+  list-style: none;
+  counter-reset: round;
+}
+
+.round {
+  position: relative;
+  padding: 14px 18px 14px 46px;
+  background: var(--paper);
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+  counter-increment: round;
+}
+
+/* 순서가 곧 시간 순이라 번호를 남긴다 — 뒤 라운드가 앞 라운드의 부수 효과인
+   경우가 있어 순서 없이는 읽히지 않는다. */
+.round::before {
+  content: counter(round);
+  position: absolute;
+  top: 15px;
+  left: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.symptom {
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.detail {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.detail p {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.tag {
+  flex: none;
+  width: 3em;
+  padding: 2px 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--muted);
+  background: var(--panel);
+  border-radius: 4px;
+}
+
+.tagFix {
+  color: var(--signal);
+  background: var(--signal-bg);
+}
+
+/* 여섯 라운드 중 셋이 같은 원인이었다 — 그 줄기만 따로 세운다. */
+.thread {
+  margin-top: calc(var(--unit) * 4);
+  padding: 18px 20px;
+  background: var(--panel);
+  border-left: 2px solid var(--signal);
+}
+
+.thread h3 {
+  font-size: 15.5px;
+  letter-spacing: -0.02em;
+}
+
+.thread p {
+  margin-top: calc(var(--unit) * 1.5);
+  max-width: 74ch;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.thread code {
+  font-size: 0.92em;
+}
+
+/* 표는 좁은 화면에서 자기 안에서만 가로 스크롤한다. */
+.tableWrap {
+  margin-top: calc(var(--unit) * 2.5);
+  overflow-x: auto;
+  background: var(--paper);
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table caption {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12.5px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.table th,
+.table td {
+  padding: 9px 14px;
+  text-align: right;
+  vertical-align: baseline;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.table thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.table th:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.table tbody td {
+  color: var(--ink-2);
+}
+
+.table tr:last-child th,
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.lessons {
+  margin-top: calc(var(--unit) * 4);
+  display: grid;
+  gap: calc(var(--unit) * 1.5);
+  padding: 0;
+  max-width: 78ch;
+  list-style: none;
+}
+
+.lessons li {
+  padding-left: 14px;
+  border-left: 2px solid var(--rule);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.lessons b {
+  color: var(--ink);
+}
+
+.closing {
+  margin-top: calc(var(--unit) * 3);
+  max-width: 74ch;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}

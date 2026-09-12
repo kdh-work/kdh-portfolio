@@ -19,7 +19,7 @@ export function IsoMapPreview() {
           <p>{copy.lede}</p>
         </div>
 
-        <VpcIsoMap source={vpcResourceMap} initialZoom={0.85} />
+        <VpcIsoMap source={vpcResourceMap} initialZoom={0.85} canvasHeight={460} />
 
         <p className={styles.note}>
           <Link href="/iso-map">{copy.demoLink}</Link> — {copy.demoLinkNote}

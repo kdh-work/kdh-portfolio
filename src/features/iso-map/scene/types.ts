@@ -19,6 +19,14 @@ export interface IsoScreenPoint {
   y: number;
 }
 
+/** 화면 좌표계의 사각 창. 캔버스 프레임과 카드를 가두는 창이 같은 모양이다. */
+export interface IsoViewBox {
+  minX: number;
+  minY: number;
+  width: number;
+  height: number;
+}
+
 /**
  * 투영 방식.
  * - `isometric`: 아이소메트릭 3D. z 가 높이로 드러나고 박스가 3면으로 보인다.
@@ -149,6 +157,17 @@ export interface IsoLabelPlate {
   height: number;
 }
 
+/**
+ * 확장한 핀이 줄 단위로 보여줄 상세 정보.
+ *
+ * 렌더러는 문자열만 그린다 — 어떤 항목을 몇 개 넣을지, 값이 없을 때 무엇을
+ * 적을지는 도메인을 아는 어댑터가 정한다.
+ */
+export interface IsoNodeDetail {
+  label: string;
+  value: string;
+}
+
 /** 자원 박스. */
 export interface IsoNode {
   id: string;
@@ -163,6 +182,8 @@ export interface IsoNode {
   subLabel?: string;
   /** 스크린리더용 유형 이름 */
   kindLabel?: string;
+  /** 핀을 눌러 펼쳤을 때 보여줄 항목들. 비어 있으면 펼치지 않는다. */
+  details?: IsoNodeDetail[];
   faces: IsoBoxFaces;
   /** 강조 시 함께 살릴 노드 id (전이 연결 포함) */
   relatedIds: string[];
@@ -248,7 +269,7 @@ export interface IsoScene {
   /** 헤더에 표시할 요약 문구 (예: "서브넷 6 · 라우팅테이블 3") */
   summary: string;
   /** 인트린식 크기 — viewBox 와 width/height 를 같게 두어 라벨 크기를 고정한다. */
-  viewBox: { minX: number; minY: number; width: number; height: number };
+  viewBox: IsoViewBox;
   /**
    * 바닥판 위 격자선. **항상 계산해서 실어 보내고 보일지는 렌더러가 정한다** —
    * 표시 여부는 투영이 아니라 표현의 문제라 `IsoProjectionConfig` 에 넣지 않았다.
