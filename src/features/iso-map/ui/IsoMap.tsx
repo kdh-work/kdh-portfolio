@@ -10,22 +10,18 @@ import {
 } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { ISO_DEFAULT_YAW_DEG } from "../scene/projection";
-import {
-  CARD_FONT,
-  buildIsoPinCard,
-  buildIsoPins,
-  padViewBoxForLabels,
-} from "../scene/pins";
+import { CARD_FONT, buildIsoPinCard } from "../scene/pins";
 import type { IsoPin, IsoPinCard } from "../scene/pins";
 import { fitTextToWidth } from "../scene/text";
 import type {
   IsoEdge,
+  IsoLabelMode,
   IsoNode,
   IsoScene,
   IsoViewBox,
   IsoViewMode,
 } from "../scene/types";
-import { truncateLabel } from "./labels";
+import { NODE_FONT, fitNodeLabel } from "./labels";
 import { useMapViewport } from "./useMapViewport";
 import { useYawDrag } from "./useYawDrag";
 import styles from "./IsoMap.module.css";
@@ -48,10 +44,18 @@ type Props = {
   yawDeg?: number;
   onYawChange?: (deg: number) => void;
   /**
-   * 시점에 무관한 고정 프레임. 회전하면 콘텐츠의 화면 크기가 바뀌는데, 씬이
-   * 계산한 viewBox 를 그대로 쓰면 드래그하는 동안 캔버스가 커졌다 작아진다.
+   * 실제로 그릴 캔버스. 시점에 무관한 고정 크기에 라벨 층 여백까지 더해
+   * **래퍼가 계산해** 넘긴다 — WebGL 판도 같은 값을 받아야 두 렌더러가 콘텐츠를
+   * 같은 픽셀에 놓는다.
    */
   frame?: IsoScene["viewBox"];
+  /** 고른 이름 표시 방식. 두 렌더러가 공유하므로 바깥에서 들고 있는다. */
+  labelMode: IsoLabelMode;
+  /** 실제로 적용되는 표시 방식 — 평면도에서는 핀이 텍스트로 내려온다. */
+  effectiveLabelMode: IsoLabelMode;
+  onLabelModeChange: (mode: IsoLabelMode) => void;
+  /** 해석된 핀 배치. 핀 모드가 아니면 빈 배열이다. */
+  pins: IsoPin[];
   /**
    * 강조 상태를 바깥에서 들고 있는다 — SVG 와 WebGL 렌더러가 같은 강조를
    * 공유해야 토글이 진짜 A/B 비교가 된다.
@@ -82,14 +86,6 @@ const VIEW_MODE_OPTIONS: { key: IsoViewMode; label: string }[] = [
   { key: "flat", label: "2D" },
 ];
 
-/**
- * 자원 이름을 어디에 두는가.
- * - `pin`: 지지대로 들어 올린 화면 수평 칩 (콜아웃)
- * - `text`: 박스 윗면에 직접 얹는 글자
- * - `none`: 아무것도 적지 않는다 — 배치와 연결만 보고 싶을 때
- */
-type IsoLabelMode = "pin" | "text" | "none";
-
 const LABEL_MODE_OPTIONS: { key: IsoLabelMode; label: string }[] = [
   { key: "pin", label: "핀" },
   { key: "text", label: "텍스트" },
@@ -111,6 +107,10 @@ export function IsoMap({
   yawDeg,
   onYawChange,
   frame,
+  labelMode,
+  effectiveLabelMode,
+  onLabelModeChange,
+  pins,
   hoveredId,
   onHoverChange,
   rendererMode = "svg",
@@ -129,25 +129,6 @@ export function IsoMap({
   const rotatable = viewMode === "isometric" && !!onYawChange;
 
   /**
-   * 이름 표시 방식. 격자와 같은 이유로 렌더러가 직접 들고 있는다 — 씬은 이름과
-   * 앵커만 담고, 그것을 박스 위에 얹을지 핀으로 띄울지는 그리는 쪽의 문제다.
-   */
-  const [labelMode, setLabelMode] = useState<IsoLabelMode>("pin");
-
-  /**
-   * 실제로 적용되는 이름 표시 방식.
-   *
-   * **평면도는 늘 텍스트다.** 핀이 풀어 주는 문제 — 마름모 윗면 위에서 글자가
-   * 한쪽으로 쏠려 보이는 것, 박스 폭이 이름 길이를 떠안는 것 — 가 2D 에는 없다.
-   * 박스가 반듯한 사각형이라 글자가 그 안에 그대로 들어가고, 오히려 핀을 세우면
-   * 칩이 박스 위를 덮어 더 어수선하다.
-   *
-   * 고른 값(`labelMode`)은 그대로 두어 3D 로 돌아가면 되살아난다.
-   */
-  const effectiveLabelMode: IsoLabelMode =
-    viewMode === "flat" && labelMode === "pin" ? "text" : labelMode;
-
-  /**
    * 지금 고를 수 있는 표시 방식.
    *
    * 평면도에서는 핀을 뺀다. 가리기까지 함께 감추면 2D 에서 라벨을 끌 방법이
@@ -159,18 +140,10 @@ export function IsoMap({
       : LABEL_MODE_OPTIONS;
 
   /**
-   * 실제로 그릴 프레임. 회전 중에는 콘텐츠 크기가 계속 변하므로 고정 프레임을
+   * 실제로 그릴 캔버스. 회전 중에는 콘텐츠 크기가 계속 변하므로 고정 프레임을
    * 받아 쓴다. 콘텐츠는 그 안에서 돌기만 한다.
-   *
-   * 라벨 층 여백은 **표시 방식과 상관없이 항상** 붙인다. 칩은 앵커보다 위에
-   * 서므로 도식만 감싼 프레임으로는 맨 뒷줄 자원의 칩이 잘리는데, 그렇다고
-   * 핀일 때만 넓히면 텍스트·가리기로 바꾸는 순간 캔버스가 52px 줄면서 도식이
-   * 그만큼 위로 뛴다. 보던 자리가 어긋나는 것이 여백이 조금 남는 것보다 나쁘다.
    */
-  const box = useMemo(
-    () => padViewBoxForLabels(frame ?? scene.viewBox),
-    [frame, scene.viewBox],
-  );
+  const box = frame ?? scene.viewBox;
 
   /* 배율과 맵 안에서의 이동. 배율은 씬이 아니라 이 뷰포트에 걸린다. */
   const view = useMapViewport({
@@ -228,18 +201,6 @@ export function IsoMap({
   /* ────────────────────────── 콜아웃 핀 ──────────────────────────
      이름을 박스 평면에서 떼어 내 지지대 끝 칩에 담는다. 배치 계산은 장면
      계층(`scene/pins.ts`)이 하고 여기서는 그리기만 한다. */
-
-  /**
-   * 핀 배치.
-   *
-   * `box` 를 넘기는 것은 가장자리 자원의 긴 이름이 캔버스 밖으로 잘리지 않게
-   * 하기 위해서다. 각도가 바뀌면 앵커가 움직이므로 회전 중에도 다시 계산되는데,
-   * 노드 수만큼의 사각형 겹침 검사라 씬 재계산에 묻힌다.
-   */
-  const pins = useMemo(
-    () => (effectiveLabelMode === "pin" ? buildIsoPins(scene.nodes, box) : []),
-    [effectiveLabelMode, scene.nodes, box],
-  );
 
   const nodeById = useMemo(
     () => new Map(scene.nodes.map((node) => [node.id, node])),
@@ -433,7 +394,7 @@ export function IsoMap({
                   effectiveLabelMode === option.key && styles.toggleActive,
                 )}
                 aria-pressed={effectiveLabelMode === option.key}
-                onClick={() => setLabelMode(option.key)}
+                onClick={() => onLabelModeChange(option.key)}
               >
                 {option.label}
               </button>
@@ -525,8 +486,14 @@ export function IsoMap({
 
           {/*
             배율은 Figma 관례를 따른다 — `[−] 값 [+]` 에 값은 좌우로 끌어 연속
-            조절하고, 끌지 않고 누르면 100% 로 돌아온다. 정지 배율 몇 개를 버튼으로
-            고르던 방식은 10%~400% 범위를 감당하지 못한다.
+            조절한다. 정지 배율 몇 개를 버튼으로 고르던 방식은 10%~400% 범위를
+            감당하지 못한다.
+
+            끌지 않고 누르면 **맞춤 배율**로 돌아온다. 옆에 [맞춤] 버튼을 따로
+            두었었는데, 값 손잡이와 하는 일이 겹쳐 보일 만큼 가까운 자리라 버튼을
+            지우고 그 동작을 손잡이로 옮겼다. Figma 의 관례값인 100% 는 정지
+            배율에 있어 [+] [−] 로도 닿지만, 맞춤은 맵 크기에 따라 달라지는
+            계산값이라 다른 길이 없다.
           */}
           <div className={styles.group}>
             <div className={styles.zoom} role="group" aria-label="배율">
@@ -546,7 +513,7 @@ export function IsoMap({
                   view.scrubbing && styles.zoomValueActive,
                 )}
                 role="slider"
-                aria-label="배율"
+                aria-label="배율 — 끌어서 조절, 누르면 전체 맞춤"
                 aria-valuenow={Math.round(zoom * 100)}
                 aria-valuemin={Math.round(view.zoomMin * 100)}
                 aria-valuemax={Math.round(view.zoomMax * 100)}
@@ -567,17 +534,13 @@ export function IsoMap({
                 +
               </button>
             </div>
-            {/* 스크롤바가 없으므로 큰 맵은 이 버튼 없이 한눈에 볼 방법이 없다. */}
-            <button type="button" className={styles.toggle} onClick={view.fit}>
-              맞춤
-            </button>
           </div>
         </div>
       </header>
 
       {/*
         도식이 놓이는 뷰포트. 스크롤바를 두지 않고(`overflow: hidden`) 바깥은
-        Space + 드래그·Space + 휠·맞춤 버튼으로 본다.
+        Space + 드래그·Space + 휠·배율 값 누르기(전체 맞춤)로 본다.
       */}
       <div
         ref={view.viewportRef}
@@ -738,7 +701,11 @@ export function IsoMap({
                         className={styles.nodeLabel}
                         textAnchor="middle"
                       >
-                        {truncateLabel(node.name)}
+                        {fitNodeLabel(
+                          node.name,
+                          NODE_FONT.name,
+                          node.labelMaxWidth,
+                        )}
                       </text>
                       {node.subLabel && (
                         <text
@@ -747,7 +714,11 @@ export function IsoMap({
                           className={styles.nodeSubLabel}
                           textAnchor="middle"
                         >
-                          {truncateLabel(node.subLabel)}
+                          {fitNodeLabel(
+                            node.subLabel,
+                            NODE_FONT.sub,
+                            node.labelMaxWidth,
+                          )}
                         </text>
                       )}
                     </>

@@ -27,7 +27,7 @@ import {
   transformedRectCorners,
 } from '../scene/projection';
 import type { IsoPathGap } from '../scene/projection';
-import { estimateTextWidth } from '../scene/text';
+import { estimateTextWidth, fitTextToWidth } from '../scene/text';
 import type {
   IsoBox,
   IsoEdge,
@@ -68,7 +68,23 @@ const LAYER_LABEL = {
 
 /** 그리드 단위 치수. 1 = projection unit 1칸. */
 const GRID = {
-  nodeWidth: 2.4,
+  /**
+   * 자원 박스 폭.
+   *
+   * 2.4(=82px) 였는데 3.4(=116px)로 넓혔다. 박스 위에 이름을 얹는 `text` 모드에서
+   * 가장 긴 이름이 88px 이라 82px 짜리 박스를 넘쳐 났다 — 3D 는 마름모라 덜
+   * 드러났지만 2D 는 사각형이라 글자가 변을 넘는 것이 그대로 보인다.
+   *
+   * 값을 정한 기준은 실측 폭이 아니라 **말줄임이 쓰는 추정 폭**이다. 추정식은
+   * 라틴을 글자 크기의 0.58 배로 보는데 실제 렌더는 0.49 배라 약 19% 과대평가한다.
+   * 실측에 맞춰 폭을 정하면 잘릴 이유가 없는 이름이 잘린다 — 16자 이름의 추정
+   * 폭(102px)이 들어가고도 남게 잡아야 한다.
+   *
+   * 3D·2D 가 같은 그리드를 공유하므로 한쪽만 넓힐 수는 없다. 핀 모드에서는 칩이
+   * 박스 크기와 무관하니 이 값이 이름을 좌우하지 않고, 넓어진 만큼 레인 간격도
+   * 함께 밀려 비례는 유지된다.
+   */
+  nodeWidth: 3.4,
   nodeDepth: 1.5,
   /**
    * 박스 높이는 낮게 유지한다. 아이소메트릭에서는 박스가 높을수록 뒤쪽(화면 위쪽)
@@ -112,6 +128,18 @@ const viewBoxPad = (config: IsoProjectionConfig) => ({
   x: config.unit * 1.7,
   y: config.unit * 1.3,
 });
+/**
+ * 박스 안 라벨 양옆에 남겨 둘 여백(px).
+ *
+ * 3D 는 윗면이 마름모라 가운데 높이에서만 폭이 온전하고 위아래로 갈수록 좁아진다.
+ * 여백을 이만큼 두면 두 줄짜리 라벨도 마름모 안에 남는다.
+ */
+const NODE_LABEL_INSET = 12;
+
+/** 박스 안 라벨이 쓸 수 있는 폭(px). 박스 폭에서 좌우 여백을 뺀 값이다. */
+const labelMaxWidth = (config: IsoProjectionConfig) =>
+  GRID.nodeWidth * config.unit - NODE_LABEL_INSET;
+
 /** 구획 이름 글자 크기. 바깥(VPC)만 키운다. */
 const ZONE_LABEL_FONT = { inner: 11, outer: 15 } as const;
 
@@ -193,6 +221,7 @@ export const buildIsoVpcLayout = (
           kindLabel: LAYER_LABEL.subnet,
           name: subnet.name ?? subnet.subnetId,
           subLabel: subnet.cidrBlock ?? undefined,
+          labelMaxWidth: labelMaxWidth(config),
           faces: buildBoxFaces(box, config),
           relatedIds: [],
         },
@@ -316,6 +345,7 @@ export const buildIsoVpcLayout = (
         kindLabel: LAYER_LABEL.routeTable,
         name: routeTable.name ?? routeTable.routeTableId,
         subLabel: `서브넷 ${attachedSubnetIds.length}`,
+        labelMaxWidth: labelMaxWidth(config),
         faces: buildBoxFaces(box, config),
         relatedIds: [],
       },
@@ -362,6 +392,7 @@ export const buildIsoVpcLayout = (
         kindLabel: LAYER_LABEL.network,
         name: network.name ?? network.id,
         subLabel: network.type,
+        labelMaxWidth: labelMaxWidth(config),
         faces: buildBoxFaces(box, config),
         relatedIds: [],
       },
@@ -772,7 +803,9 @@ export const buildIsoVpcLayout = (
       bounds,
       placed.node.faces.topCenter.x,
       placed.node.faces.topCenter.y,
-      placed.node.name.slice(0, 16)
+      // 화면에 실제로 나가는 것은 폭에 맞춰 잘린 이름이다 — 자르기 전 이름으로
+      // 재면 긴 이름 하나가 캔버스를 쓸데없이 넓힌다.
+      fitTextToWidth(placed.node.name, 11, placed.node.labelMaxWidth)
     );
   });
 
@@ -874,6 +907,7 @@ export const buildIsoVpcLayout = (
     tone: placed.node.tone,
     name: placed.node.name,
     subLabel: placed.node.subLabel,
+    labelMaxWidth: placed.node.labelMaxWidth,
     kindLabel: placed.node.kindLabel,
     box: placed.box,
     relatedIds: placed.node.relatedIds,
@@ -906,6 +940,8 @@ export const buildIsoVpcLayout = (
         kind: 'vpc',
         tone: 'light-gray',
         name: source?.vpcResourceMap?.name ?? LAYER_LABEL.vpc,
+        // 바닥판에는 박스 위 라벨을 얹지 않는다 — 이름은 구획 레일에 새긴다.
+        labelMaxWidth: 0,
         box: vpcBox,
         relatedIds: [],
       },

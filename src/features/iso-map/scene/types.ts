@@ -34,6 +34,17 @@ export interface IsoViewBox {
  */
 export type IsoViewMode = 'isometric' | 'flat';
 
+/**
+ * 자원 이름을 어디에 두는가.
+ * - `pin`: 지지대로 들어 올린 화면 수평 칩 (콜아웃)
+ * - `text`: 박스 윗면에 직접 얹는 글자
+ * - `none`: 아무것도 적지 않는다 — 배치와 연결만 보고 싶을 때
+ *
+ * 씬이 아니라 **그리는 쪽**의 선택이지만, SVG·WebGL 두 렌더러가 같은 값을
+ * 나눠 써야 토글이 A/B 비교가 되므로 타입을 장면 계층에 둔다.
+ */
+export type IsoLabelMode = 'pin' | 'text' | 'none';
+
 export interface IsoProjectionConfig {
   mode: IsoViewMode;
   /** 그리드 1칸의 화면 폭 기준 단위(px). 확대/축소는 이 값으로만 조정한다. */
@@ -180,6 +191,13 @@ export interface IsoNode {
   name: string;
   /** 박스 안 보조 라벨 (CIDR, 자원 유형 등) */
   subLabel?: string;
+  /**
+   * 박스 안에서 라벨이 차지할 수 있는 최대 폭(px).
+   *
+   * 렌더러는 박스의 그리드 치수를 모르고 완성된 경로 문자열만 받으므로, 말줄임
+   * 기준을 스스로 계산할 수 없다. 레이아웃이 박스를 정할 때 함께 넘긴다.
+   */
+  labelMaxWidth: number;
   /** 스크린리더용 유형 이름 */
   kindLabel?: string;
   /** 핀을 눌러 펼쳤을 때 보여줄 항목들. 비어 있으면 펼치지 않는다. */
@@ -225,6 +243,8 @@ export interface IsoSolidBox {
   tone: IsoTone;
   name: string;
   subLabel?: string;
+  /** 박스 안 라벨의 최대 폭(px) — SVG 판과 같은 기준으로 자르기 위해 함께 넘긴다. */
+  labelMaxWidth: number;
   kindLabel?: string;
   box: IsoBox;
   /** 강조 시 함께 살릴 노드 id */

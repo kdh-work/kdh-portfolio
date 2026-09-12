@@ -58,3 +58,72 @@
 .dragging {
   cursor: grabbing;
 }
+
+/* ---------------- 콜아웃 핀 ----------------
+
+   SVG 판(`IsoMap.module.css` 의 `.pin*`)과 같은 모양이어야 렌더러 토글이 비교가
+   된다. 색만 다르게 얻는다 — 여기서는 계열색을 CSS 변수로 상속받을 수 없어
+   (핀 층이 tone 클래스 바깥에 있다) 렌더러가 팔레트에서 읽어 inline 으로 준다.
+
+   층 전체는 포인터를 먹지 않고 칩만 받는다. 캔버스가 레이캐스터로 박스를 집어야
+   하므로 오버레이가 그 위를 통째로 덮으면 안 된다. */
+.pinLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pin {
+  transition: opacity 120ms ease-out;
+}
+
+.pinClickable {
+  /* 칩만 포인터를 받는다 — 지지대와 앵커 점은 지나가는 자리다. */
+  cursor: pointer;
+}
+
+.pinClickable .pinChip,
+.pinClickable .pinName,
+.pinClickable .pinSub {
+  pointer-events: auto;
+}
+
+.pinStem {
+  stroke-width: 1;
+}
+
+.pinDot {
+  stroke: var(--paper);
+  stroke-width: 1;
+}
+
+.pinChip {
+  fill: var(--paper);
+  stroke-width: 1;
+}
+
+.pinName {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.pinSub {
+  font-size: 10px;
+  fill: var(--muted);
+}
+
+/* 강조. SVG 판과 같은 값이다.
+
+   inline `stroke` 속성(프레젠테이션 속성)은 우선순위가 가장 낮으므로, 클래스에
+   적은 이 색이 렌더러가 넣은 계열색을 덮는다 — `!important` 가 필요 없다. */
+.pinActive .pinChip {
+  stroke: var(--signal);
+  stroke-width: 1.5;
+}
+
+.pinActive .pinStem {
+  stroke: var(--signal);
+}
