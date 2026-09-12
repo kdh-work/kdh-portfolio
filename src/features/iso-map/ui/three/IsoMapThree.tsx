@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import {
   CSS2DObject,
@@ -94,6 +100,20 @@ const ZONE_LABEL_PX = { inner: 11, outer: 15 } as const;
 const LABEL_GAP_PAD_PX = 6;
 
 const DIMMED_OPACITY = 0.3;
+
+/**
+ * 렌더 버퍼의 픽셀 수 상한.
+ *
+ * 버퍼는 캔버스의 CSS 크기 × 화면 배속(dpr)이라 **배율의 제곱으로 큰다.** 레티나
+ * 에서 400% 는 8888 × 5716 = 5천만 픽셀이 되는데, 배율이 바뀔 때마다 이만한 버퍼를
+ * 다시 잡느라 확대가 끊기고 드라이버에 따라서는 컨텍스트를 잃는다.
+ *
+ * 상한에 닿으면 배속을 낮춘다. 화질은 떨어지지만 그 지점은 이미 콘텐츠가 화면보다
+ * 훨씬 크게 확대된 상태라 눈에 덜 띄고, 끊기는 쪽이 훨씬 크게 걸린다.
+ */
+const MAX_BUFFER_PIXELS = 16e6;
+/** 이보다 낮추면 확대해 놓고도 계단이 보인다 — 그 전에 멈춘다. */
+const MIN_PIXEL_RATIO = 0.75;
 
 /**
  * 지면 두 축 중 화면에서 **가장 많이 압축되는** 배율. 배경 격자 범위를 시야각과
@@ -523,8 +543,17 @@ export function IsoMapThree({
     labelMode,
   ]);
 
-  /* ── 카메라 · 크기 (시야각·배율·프레임이 바뀔 때) ────────────── */
-  useEffect(() => {
+  /* ── 카메라 · 크기 (시야각·배율·프레임이 바뀔 때) ──────────────
+   *
+   * **`useLayoutEffect` 여야 한다.** 배율이 바뀌면 React 는 컨테이너의 크기와 핀
+   * 층의 `scale` 을 렌더 시점에 곧바로 커밋하는데, 캔버스 크기는 여기서 정한다.
+   * `useEffect` 는 **페인트 뒤**에 돌므로 한 프레임 동안 캔버스만 옛 크기로 남아
+   * 도식이 핀보다 작게 그려진다. 한 번이면 눈에 안 띄지만 휠이나 값 끌기처럼
+   * 연속으로 배율이 바뀌면 매 프레임 어긋나 도식이 떨리고 핀이 제자리를 잃는다.
+   *
+   * WebGL 렌더는 동기라 페인트 전에 끝난다 — 레이아웃 단계에서 해도 안전하다.
+   */
+  useLayoutEffect(() => {
     const renderer = rendererRef.current;
     const labelRenderer = labelRendererRef.current;
     const camera = cameraRef.current;
@@ -533,8 +562,18 @@ export function IsoMapThree({
     /* `updateStyle` 을 끄면 안 된다 — 버퍼는 dpr 배로 커지는데 CSS 크기가
        비어 있으면 레티나에서 캔버스가 두 배로 표시된다. */
     /* 버퍼를 배율만큼 키운다. 직교 창(아래 frustum)은 그대로라 콘텐츠가 그만큼
-       크게, 그러면서도 또렷하게 그려진다. */
-    renderer.setSize(frame.width * zoom, frame.height * zoom);
+       크게, 그러면서도 또렷하게 그려진다. 다만 버퍼는 배율의 제곱으로 커지므로
+       위 상한에 닿으면 배속을 낮춰 잡는다. */
+    const cssWidth = frame.width * zoom;
+    const cssHeight = frame.height * zoom;
+    const deviceRatio = Math.min(window.devicePixelRatio, 2);
+    const fitRatio = Math.sqrt(
+      MAX_BUFFER_PIXELS / Math.max(1, cssWidth * cssHeight),
+    );
+    renderer.setPixelRatio(
+      Math.max(MIN_PIXEL_RATIO, Math.min(deviceRatio, fitRatio)),
+    );
+    renderer.setSize(cssWidth, cssHeight);
     /* 라벨은 원래 크기로 배치하고 레이어를 통째로 확대한다 — 그래야 글자도
        SVG 판처럼 배율을 따라 커진다. */
     labelRenderer.setSize(frame.width, frame.height);
