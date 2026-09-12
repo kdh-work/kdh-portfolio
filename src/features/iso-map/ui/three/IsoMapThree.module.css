@@ -4,7 +4,8 @@
 
 .root {
   position: relative;
-  margin: 0 auto;
+  flex: 0 0 auto;
+  max-width: none;
   /* 드래그 중 브라우저 스크롤·확대 제스처가 끼어들지 않게 한다 */
   touch-action: none;
 }

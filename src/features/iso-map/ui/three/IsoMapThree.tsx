@@ -47,6 +47,12 @@ type Props = {
    * 그래야 두 렌더러가 콘텐츠를 같은 픽셀에 놓는다.
    */
   frame: IsoScene["viewBox"];
+  /**
+   * 화면 배율. SVG 판이 `width`/`height` 에만 곱하는 것과 같은 뜻이다 —
+   * 여기서는 렌더 버퍼를 그만큼 키우므로 확대해도 면이 흐려지지 않는다.
+   * 글자는 HTML 오버레이라 CSS 로 함께 키운다.
+   */
+  zoom?: number;
   unit: number;
   heightUnit: number;
   yawDeg: number;
@@ -107,6 +113,7 @@ const shaded = (base: string, amount: number) =>
 export function IsoMapThree({
   solid,
   frame,
+  zoom = 1,
   unit,
   heightUnit,
   yawDeg,
@@ -487,7 +494,11 @@ export function IsoMapThree({
 
     /* `updateStyle` 을 끄면 안 된다 — 버퍼는 dpr 배로 커지는데 CSS 크기가
        비어 있으면 레티나에서 캔버스가 두 배로 표시된다. */
-    renderer.setSize(frame.width, frame.height);
+    /* 버퍼를 배율만큼 키운다. 직교 창(아래 frustum)은 그대로라 콘텐츠가 그만큼
+       크게, 그러면서도 또렷하게 그려진다. */
+    renderer.setSize(frame.width * zoom, frame.height * zoom);
+    /* 라벨은 원래 크기로 배치하고 레이어를 통째로 확대한다 — 그래야 글자도
+       SVG 판처럼 배율을 따라 커진다. */
     labelRenderer.setSize(frame.width, frame.height);
 
     const { halfWidth, halfHeight } = frustumHalfExtent(
@@ -550,7 +561,7 @@ export function IsoMapThree({
     camera.updateProjectionMatrix();
 
     renderRef.current();
-  }, [frame, unit, heightUnit, yawDeg, solid.extent, hScale]);
+  }, [frame, zoom, unit, heightUnit, yawDeg, solid.extent, hScale]);
 
   /* ── 강조 · 흐리기 ─────────────────────────────────────────── */
   useEffect(() => {
@@ -599,7 +610,7 @@ export function IsoMapThree({
         onYawChange && styles.rotatable,
         drag.dragging && styles.dragging,
       )}
-      style={{ width: frame.width, height: frame.height }}
+      style={{ width: frame.width * zoom, height: frame.height * zoom }}
       {...drag.handlers}
       onPointerMove={(event) => {
         drag.handlers.onPointerMove(event);
@@ -615,7 +626,18 @@ export function IsoMapThree({
       }}
     >
       <div ref={hostRef} className={styles.layer} />
-      <div ref={labelHostRef} className={styles.labelLayer} />
+      <div
+        ref={labelHostRef}
+        className={styles.labelLayer}
+        style={{
+          width: frame.width,
+          height: frame.height,
+          right: "auto",
+          bottom: "auto",
+          transform: `scale(${zoom})`,
+          transformOrigin: "0 0",
+        }}
+      />
     </div>
   );
 }

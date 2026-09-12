@@ -1,0 +1,59 @@
+/* 클릭이 무엇을 넘겼는지 적는 자리. 도식 바로 아래에 붙여 클릭과 결과가
+   한 시야에 들어오게 한다. */
+
+.panel {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.empty {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  align-items: baseline;
+}
+
+.name {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 14px;
+}
+
+.kind {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.rows {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.row b {
+  font-weight: 600;
+  color: var(--ink-2);
+}

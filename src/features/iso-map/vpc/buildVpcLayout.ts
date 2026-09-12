@@ -27,6 +27,7 @@ import {
   transformedRectCorners,
 } from '../scene/projection';
 import type { IsoPathGap } from '../scene/projection';
+import { estimateTextWidth } from '../scene/text';
 import type {
   IsoBox,
   IsoEdge,
@@ -134,18 +135,6 @@ const LABEL_GAP_PAD = 6;
 const GRID_MARGIN = 0.25;
 
 const round2 = (value: number) => Math.round(value * 100) / 100;
-
-/**
- * 텍스트 폭 근사. SVG 는 실측이 불가능하므로 글리프 폭을 글자 종류로 나눈다.
- * 한글·한자 같은 전각은 글자 크기와 거의 같은 폭을, 라틴·숫자는 약 0.58 배를
- * 차지한다. 라틴 기준 한 값으로 뭉뚱그리면 한글 라벨의 판이 글자보다 작아진다.
- */
-const estimateTextWidth = (text: string, fontSize: number): number =>
-  [...text].reduce(
-    (width, char) =>
-      width + (char.codePointAt(0)! > 0x1100 ? fontSize : fontSize * 0.58),
-    0
-  );
 
 interface PlacedNode {
   node: IsoNode;
@@ -672,6 +661,89 @@ export const buildIsoVpcLayout = (
     });
 
     placed.node.relatedIds = [...related];
+  });
+
+  /* ----------------------------------------------------------------
+   * 9-1. 핀을 펼쳤을 때 보여줄 상세 항목
+   *
+   * **모든 배치가 끝난 뒤에** 채운다. 서브넷 항목에 라우팅 테이블 **이름**이
+   * 들어가는데, 서브넷을 만드는 시점에는 아직 라우팅 테이블 노드가 없어서
+   * 식별자밖에 쓸 수 없기 때문이다.
+   *
+   * 관계도가 이미 보여주는 것(이름·CIDR)을 되풀이하지 않고, 표를 열거나 상세
+   * 화면으로 건너가야 알 수 있던 것 — 식별자, 소속 가용영역, 무엇에 붙어 있는지 —
+   * 을 채운다. 값이 없으면 줄을 빼지 않고 대체 문구를 적는다. 줄 수가 자원마다
+   * 들쭉날쭉하면 카드 높이가 달라져 비교하기 어렵다.
+   * ---------------------------------------------------------------- */
+  const subnetSourceById = new Map(
+    subnetGroups.flatMap((group) =>
+      (group.subnetList ?? []).map(
+        (subnet) =>
+          [subnet.subnetId, { subnet, availabilityZone: group.availabilityZone }] as const
+      )
+    )
+  );
+
+  /** 라우팅 테이블에 붙은 서브넷 수. 서브넷의 첫 인접이 곧 그 테이블이다. */
+  const subnetCountByRouteTable = new Map<string, number>();
+  subnetPlacements.forEach((placed) => {
+    const routeTableId = placed.adjacentIds[0];
+    if (!routeTableId) return;
+    subnetCountByRouteTable.set(
+      routeTableId,
+      (subnetCountByRouteTable.get(routeTableId) ?? 0) + 1
+    );
+  });
+
+  /** 노드 이름을 우선하고, 노드가 없는 대상은 식별자로 적는다. */
+  const displayName = (id: string) => placementById.get(id)?.node.name ?? id;
+
+  /** 목록은 두 개까지만 적고 나머지는 수로 줄인다 — 카드가 길어지면 못 읽는다. */
+  const joinNames = (ids: string[]): string => {
+    if (!ids.length) return '없음';
+    const shown = ids.slice(0, 2).map(displayName).join(', ');
+    return ids.length > 2 ? `${shown} 외 ${ids.length - 2}개` : shown;
+  };
+
+  subnetPlacements.forEach((placed, subnetId) => {
+    const found = subnetSourceById.get(subnetId);
+    const routeTableId = found?.subnet.routeTableId;
+
+    placed.node.details = [
+      { label: '서브넷 ID', value: subnetId },
+      { label: 'CIDR', value: found?.subnet.cidrBlock ?? '-' },
+      { label: '가용 영역', value: found?.availabilityZone ?? '-' },
+      {
+        label: '라우팅 테이블',
+        value: routeTableId ? displayName(routeTableId) : '연결 없음',
+      },
+    ];
+  });
+
+  routeTablePlacements.forEach((placed, routeTableId) => {
+    const connections = placed.adjacentIds.filter((id) =>
+      networkPlacements.has(id)
+    );
+
+    placed.node.details = [
+      { label: '라우팅 테이블 ID', value: routeTableId },
+      {
+        label: '연결 서브넷',
+        value: `${subnetCountByRouteTable.get(routeTableId) ?? 0}개`,
+      },
+      { label: '연결 네트워크 자원', value: joinNames(connections) },
+    ];
+  });
+
+  networkPlacements.forEach((placed, networkId) => {
+    placed.node.details = [
+      { label: '자원 ID', value: networkId },
+      { label: '유형', value: networkResources.get(networkId)?.type ?? '-' },
+      {
+        label: '연결 라우팅 테이블',
+        value: joinNames(networkToRouteTables.get(networkId) ?? []),
+      },
+    ];
   });
 
   /* ---------------- viewBox ---------------- */

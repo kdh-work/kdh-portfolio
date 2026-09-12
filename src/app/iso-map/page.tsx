@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { isoMapIntro, isoMapLayers, vpcResourceMap } from "@/content/isoMap";
 import { profile } from "@/content/profile";
+import { ControlHistory } from "@/features/iso-map/ui/ControlHistory";
 import { LabelStudy } from "@/features/iso-map/ui/LabelStudy";
+import { PinStudy } from "@/features/iso-map/ui/PinStudy";
 import { RendererComparison } from "@/features/iso-map/ui/RendererComparison";
-import { VpcIsoMap } from "@/features/iso-map/ui/VpcIsoMap";
+import { IsoMapStage } from "@/features/iso-map/ui/IsoMapStage";
 import styles from "@/components/layout/DemoFrame.module.css";
 
 export const metadata: Metadata = {
@@ -59,9 +61,25 @@ export default function IsoMapPage() {
 
       <main className={styles.stage}>
         <div className="wrap">
-          <VpcIsoMap source={vpcResourceMap} />
+          <IsoMapStage source={vpcResourceMap} canvasHeight={660} />
         </div>
       </main>
+
+      <section className={styles.study} aria-labelledby="control-history-h">
+        <div className="wrap">
+          <h2 id="control-history-h">
+            검토 기록 — 회전·확대·이동을 붙이며 겪은 것
+          </h2>
+          <ControlHistory />
+        </div>
+      </section>
+
+      <section className={styles.study} aria-labelledby="pin-study-h">
+        <div className="wrap">
+          <h2 id="pin-study-h">검토 기록 — 자원 이름을 어디에 둘 것인가</h2>
+          <PinStudy />
+        </div>
+      </section>
 
       <section className={styles.study} aria-labelledby="renderer-h">
         <div className="wrap">

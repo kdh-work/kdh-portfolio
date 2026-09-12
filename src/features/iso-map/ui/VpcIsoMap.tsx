@@ -31,6 +31,8 @@ type Props = {
   title?: string;
   /** 처음 배율. 메인 페이지 미리보기는 조금 작게 시작한다. */
   initialZoom?: number;
+  /** 뷰포트 높이(px). 미리보기는 낮게, 데모 페이지는 넉넉하게 잡는다. */
+  canvasHeight?: number;
   onNodeClick?: (node: IsoNode) => void;
 };
 
@@ -51,7 +53,13 @@ const FLAT_DEPTH_SCALE = 0.72;
  */
 const FRAME_SAMPLE_STEP_DEG = 30;
 
-export function VpcIsoMap({ source, title, initialZoom = 1, onNodeClick }: Props) {
+export function VpcIsoMap({
+  source,
+  title,
+  initialZoom = 1,
+  canvasHeight,
+  onNodeClick,
+}: Props) {
   const [viewMode, setViewMode] = useState<IsoViewMode>("isometric");
   const [zoom, setZoom] = useState(initialZoom);
   const [yawDeg, setYawDeg] = useState(ISO_DEFAULT_YAW_DEG);
@@ -62,14 +70,20 @@ export function VpcIsoMap({ source, title, initialZoom = 1, onNodeClick }: Props
   /** 평면도에는 시점이 없으므로 WebGL 은 3D 에서만 쓴다. */
   const webgl = rendererMode === "webgl" && viewMode === "isometric";
 
+  /**
+   * **배율은 여기 없다.** 예전에는 `unit` 에 배율을 곱했는데, 글자 크기는 CSS 로
+   * 고정돼 함께 줄지 않으므로 라벨에서 역산하는 노드 폭이 배율마다 달라졌다 —
+   * 박스는 픽셀 폭을 유지하고 여백만 줄어, 배율을 바꿀 때마다 도식의 비례가
+   * 어긋났다. 배율은 렌더러가 뷰포트에 건다(`width`/`height` 에만 곱한다).
+   */
   const projection = useMemo(
     () => ({
       mode: viewMode,
-      unit: BASE_UNIT * zoom,
-      heightUnit: BASE_HEIGHT_UNIT * zoom,
+      unit: BASE_UNIT,
+      heightUnit: BASE_HEIGHT_UNIT,
       flatDepthScale: FLAT_DEPTH_SCALE,
     }),
-    [viewMode, zoom],
+    [viewMode],
   );
 
   const scene = useMemo(
@@ -152,6 +166,7 @@ export function VpcIsoMap({ source, title, initialZoom = 1, onNodeClick }: Props
           <IsoMapThree
             solid={solid}
             frame={frame}
+            zoom={zoom}
             unit={projection.unit}
             heightUnit={projection.heightUnit}
             yawDeg={yawDeg}
@@ -170,6 +185,7 @@ export function VpcIsoMap({ source, title, initialZoom = 1, onNodeClick }: Props
           />
         ) : undefined
       }
+      canvasHeight={canvasHeight}
       emptyMessage="이 VPC 에 표시할 서브넷·라우팅 테이블이 없습니다."
       clickable={!!onNodeClick}
       onNodeClick={onNodeClick}
