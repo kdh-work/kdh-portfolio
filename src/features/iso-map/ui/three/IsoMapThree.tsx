@@ -210,8 +210,15 @@ export function IsoMapThree({
   const edgeIndex = edgeChoice.edge;
   const edgeForward = edgeChoice.alongTraversal;
 
-  /* ── 렌더러 · 씬 생성 (한 번) ──────────────────────────────── */
-  useEffect(() => {
+  /* ── 렌더러 · 씬 생성 (한 번) ──────────────────────────────────
+   *
+   * 아래 세 단계(생성 → 지오메트리 → 크기·카메라)는 **같은 종류의 effect 여야
+   * 한다.** 섞으면 실행 순서가 선언 순서를 따르지 않는다 — 레이아웃 단계가 먼저
+   * 통째로 돌고 그 다음 페인트, 그 뒤에 나머지가 돈다. 크기·카메라만 레이아웃
+   * 단계로 옮겼더니 마운트 때 렌더러가 아직 없어 그대로 건너뛰었고, 의존성이
+   * 그대로라 다시 불리지도 않아 캔버스가 빈 채로 남았다.
+   */
+  useLayoutEffect(() => {
     const host = hostRef.current;
     const labelHost = labelHostRef.current;
     if (!host || !labelHost) return;
@@ -254,7 +261,7 @@ export function IsoMapThree({
   }, []);
 
   /* ── 지오메트리 구성 (장면·시야각 선택이 바뀔 때만) ──────────── */
-  useEffect(() => {
+  useLayoutEffect(() => {
     const threeScene = sceneRef.current;
     const paint = palette.current;
     if (!threeScene || !paint) return;
