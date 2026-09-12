@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
   CSS2DObject,
@@ -11,7 +11,13 @@ import {
   pickFloorEdge,
   projectIso,
 } from "../../scene/projection";
-import type { IsoScene, IsoSolidScene, IsoTone } from "../../scene/types";
+import type { IsoPin } from "../../scene/pins";
+import type {
+  IsoLabelMode,
+  IsoScene,
+  IsoSolidScene,
+  IsoTone,
+} from "../../scene/types";
 import {
   cameraDirection,
   frustumHalfExtent,
@@ -21,7 +27,7 @@ import {
 import { createFloorText } from "./floorText";
 import { railGeometry, railPolyline } from "./rail";
 import { readTonePalette, SHADE, type TonePalette } from "./tones";
-import { truncateLabel } from "../labels";
+import { NODE_FONT, fitNodeLabel } from "../labels";
 import { useYawDrag } from "../useYawDrag";
 import styles from "./IsoMapThree.module.css";
 
@@ -57,6 +63,20 @@ type Props = {
   heightUnit: number;
   yawDeg: number;
   onYawChange?: (deg: number) => void;
+  /**
+   * 이름 표시 방식. SVG 판과 **같은 값**을 받는다 — 한쪽만 핀이고 다른 쪽은 박스
+   * 위 텍스트면 렌더러 토글이 A/B 비교가 아니라 딴 물건 비교가 된다.
+   */
+  labelMode: IsoLabelMode;
+  /**
+   * 해석된 핀 배치. 래퍼가 SVG 판과 나눠 쓰라고 계산해 넘긴다.
+   *
+   * 핀을 `CSS2DObject` 로 매달 수 없는 이유가 여기 있다 — 칩의 세로 위치는 이미
+   * 놓인 칩과의 겹침에 따라 지지대 단계만큼 올라가므로 **투영 결과를 보고서야**
+   * 정해진다. 3D 점에 매다는 오버레이로는 그 조정을 표현할 수 없어, 핀 층만은
+   * 화면 좌표를 직접 쓰는 오버레이로 그린다.
+   */
+  pins: IsoPin[];
   /** 바닥 격자 표시 여부 */
   showGrid: boolean;
   hoveredId: string | null;
@@ -118,6 +138,8 @@ export function IsoMapThree({
   heightUnit,
   yawDeg,
   onYawChange,
+  labelMode,
+  pins,
   showGrid,
   hoveredId,
   onHoverChange,
@@ -141,6 +163,8 @@ export function IsoMapThree({
   const renderRef = useRef<() => void>(() => {});
 
   const palette = useRef<TonePalette | null>(null);
+  /** 핀 층은 React 가 그리므로 색을 렌더 경로에서도 읽을 수 있어야 한다. */
+  const [paletteState, setPaletteState] = useState<TonePalette | null>(null);
 
   const pixelsPerWorldUnit = unit * PIXELS_PER_UNIT;
   const hScale = heightScale(unit, heightUnit);
@@ -173,6 +197,7 @@ export function IsoMapThree({
     if (!host || !labelHost) return;
 
     palette.current = readTonePalette();
+    setPaletteState(palette.current);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -441,20 +466,32 @@ export function IsoMapThree({
       threeScene.add(line);
     });
 
-    /* 5. 자원 박스 + 이름(HTML 오버레이) */
+    /* 5. 자원 박스 + 이름(HTML 오버레이)
+          이름을 박스에 얹는 것은 `text` 모드뿐이다. 핀 모드는 아래 핀 층이,
+          가리기는 아무것도 그리지 않는다. */
     solid.boxes.forEach((item) => {
       addBox(item.id, item.tone, item.box, true);
+
+      if (labelMode !== "text") return;
 
       const wrapper = document.createElement("div");
       wrapper.className = styles.nodeLabel ?? "";
       /* SVG 판과 같은 표식을 남긴다 — 두 렌더러의 위치를 재서 비교할 수 있게. */
       wrapper.dataset.nodeId = item.id;
       const name = document.createElement("strong");
-      name.textContent = truncateLabel(item.name);
+      name.textContent = fitNodeLabel(
+        item.name,
+        NODE_FONT.name,
+        item.labelMaxWidth,
+      );
       wrapper.appendChild(name);
       if (item.subLabel) {
         const sub = document.createElement("span");
-        sub.textContent = truncateLabel(item.subLabel);
+        sub.textContent = fitNodeLabel(
+          item.subLabel,
+          NODE_FONT.sub,
+          item.labelMaxWidth,
+        );
         wrapper.appendChild(sub);
       }
 
@@ -483,6 +520,7 @@ export function IsoMapThree({
     frame.width,
     frame.height,
     unit,
+    labelMode,
   ]);
 
   /* ── 카메라 · 크기 (시야각·배율·프레임이 바뀔 때) ────────────── */
@@ -582,6 +620,14 @@ export function IsoMapThree({
     renderRef.current();
   }, [hoveredId, solid.boxes]);
 
+  /** 강조 집합 — 위 effect 가 재질에 쓰는 것과 같은 계산을 핀 층에도 쓴다. */
+  const relatedIdSet = useMemo<Set<string> | null>(() => {
+    if (!hoveredId) return null;
+    const node = solid.boxes.find((item) => item.id === hoveredId);
+    if (!node) return null;
+    return new Set([node.id, ...node.relatedIds]);
+  }, [hoveredId, solid.boxes]);
+
   /* ── 포인터 → 레이캐스터 ────────────────────────────────────
      SVG 는 DOM 이벤트로 공짜였던 부분이다. WebGL 에서는 광선을 직접 쏴야 한다. */
   const pick = (event: React.PointerEvent<HTMLDivElement>): string | null => {
@@ -603,6 +649,16 @@ export function IsoMapThree({
     return typeof id === "string" ? id : null;
   };
 
+  /**
+   * 포인터 아래의 핀 id. 핀 층은 캔버스 **위에 뜬 오버레이**라 레이캐스터가 닿지
+   * 않는다 — 광선은 3D 물체만 맞히므로, 칩 위에 있어도 그 아래 박스(또는 허공)가
+   * 잡힌다. 그래서 DOM 쪽을 먼저 보고, 핀 위라면 레이캐스터를 건너뛴다.
+   */
+  const pinUnderPointer = (target: EventTarget | null): string | null => {
+    const element = target instanceof Element ? target : null;
+    return element?.closest?.("[data-pin-id]")?.getAttribute("data-pin-id") ?? null;
+  };
+
   return (
     <div
       className={cx(
@@ -616,11 +672,17 @@ export function IsoMapThree({
         drag.handlers.onPointerMove(event);
         /* 돌리는 중에는 강조를 건드리지 않는다 — 시점을 바꾸려던 동작이
            엉뚱한 자원을 켜고 끄면 방해가 된다. */
-        if (!drag.dragging) onHoverChange(pick(event));
+        if (drag.dragging) return;
+        onHoverChange(pinUnderPointer(event.target) ?? pick(event));
       }}
       onPointerLeave={() => onHoverChange(null)}
       onClick={(event) => {
         if (drag.movedRef.current) return;
+        const pinned = pinUnderPointer(event.target);
+        if (pinned) {
+          onNodeClick?.(pinned);
+          return;
+        }
         const id = pick(event as unknown as React.PointerEvent<HTMLDivElement>);
         if (id) onNodeClick?.(id);
       }}
@@ -638,6 +700,95 @@ export function IsoMapThree({
           transformOrigin: "0 0",
         }}
       />
+
+      {/*
+        콜아웃 핀.
+
+        SVG 판과 **같은 배치**(래퍼가 계산해 넘긴 `pins`)를 같은 모양으로 그린다.
+        viewBox 를 프레임과 같게 두면 핀 좌표를 변환 없이 그대로 쓸 수 있고,
+        배율은 라벨 층과 마찬가지로 레이어를 통째로 확대해 건다.
+
+        박스 이름을 `CSS2DObject`(HTML)로 두는 것과 달리 핀만 오버레이 SVG 인
+        이유는 위 `pins` prop 주석에 있다 — 칩의 세로 위치가 투영 결과를 보고서야
+        정해져 3D 점에 매달 수 없다. 어느 쪽이든 글자는 텍스처가 아니라 진짜
+        글자로 남는다.
+      */}
+      {labelMode === "pin" && pins.length > 0 && (
+        <svg
+          className={styles.pinLayer}
+          width={frame.width}
+          height={frame.height}
+          viewBox={`${frame.minX} ${frame.minY} ${frame.width} ${frame.height}`}
+          style={{ transform: `scale(${zoom})`, transformOrigin: "0 0" }}
+          aria-hidden="true"
+        >
+          {pins.map((pin) => {
+            const paint = paletteState?.[pin.tone];
+            const line = paint?.line ?? "currentColor";
+            const active = relatedIdSet?.has(pin.id) ?? false;
+            const dimmed = !!relatedIdSet && !active;
+
+            return (
+              <g
+                key={`${pin.id}-pin`}
+                className={cx(
+                  styles.pin,
+                  active && styles.pinActive,
+                  !!onNodeClick && styles.pinClickable,
+                )}
+                data-pin-id={pin.id}
+                opacity={dimmed ? DIMMED_OPACITY : 1}
+              >
+                <title>
+                  {pin.subLabel ? `${pin.name} · ${pin.subLabel}` : pin.name}
+                </title>
+                <line
+                  x1={pin.anchor.x}
+                  y1={pin.anchor.y}
+                  x2={pin.tip.x}
+                  y2={pin.tip.y}
+                  className={styles.pinStem}
+                  stroke={line}
+                />
+                <circle
+                  cx={pin.anchor.x}
+                  cy={pin.anchor.y}
+                  r="2.75"
+                  className={styles.pinDot}
+                  fill={line}
+                />
+                <rect
+                  x={pin.chip.x}
+                  y={pin.chip.y}
+                  width={pin.chip.width}
+                  height={pin.chip.height}
+                  rx="4"
+                  className={styles.pinChip}
+                  stroke={line}
+                />
+                <text
+                  x={pin.chip.x + pin.chip.width / 2}
+                  y={pin.nameY}
+                  textAnchor="middle"
+                  className={styles.pinName}
+                >
+                  {pin.name}
+                </text>
+                {pin.subY !== null && (
+                  <text
+                    x={pin.chip.x + pin.chip.width / 2}
+                    y={pin.subY}
+                    textAnchor="middle"
+                    className={styles.pinSub}
+                  >
+                    {pin.subLabel}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      )}
     </div>
   );
 }

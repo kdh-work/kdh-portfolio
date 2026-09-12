@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import type { IsoNode, IsoViewMode } from "../scene/types";
+import type { IsoLabelMode, IsoNode, IsoViewMode } from "../scene/types";
 import type { IsoVpcSource } from "../vpc/sourceTypes";
 import { ISO_DEFAULT_YAW_DEG } from "../scene/projection";
+import { buildIsoPins, padViewBoxForLabels } from "../scene/pins";
 import { buildIsoVpcLayout } from "../vpc/buildVpcLayout";
 import { IsoMap } from "./IsoMap";
 
@@ -66,9 +67,23 @@ export function VpcIsoMap({
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [rendererMode, setRendererMode] = useState<"svg" | "webgl">("svg");
   const [showGrid, setShowGrid] = useState(false);
+  /**
+   * 이름 표시 방식은 **두 렌더러가 공유한다** — 강조·격자와 같은 이유다. 한쪽만
+   * 핀이고 다른 쪽은 박스 위 텍스트면 토글이 A/B 비교가 아니라 딴 물건 비교가 된다.
+   */
+  const [labelMode, setLabelMode] = useState<IsoLabelMode>("pin");
 
   /** 평면도에는 시점이 없으므로 WebGL 은 3D 에서만 쓴다. */
   const webgl = rendererMode === "webgl" && viewMode === "isometric";
+
+  /**
+   * 실제로 적용되는 표시 방식. **평면도는 늘 텍스트다** — 핀이 풀어 주는 문제
+   * (마름모 윗면에서 글자가 쏠려 보이는 것, 박스 폭이 이름 길이를 떠안는 것)가
+   * 2D 에는 없고, 오히려 칩이 박스 위를 덮어 더 어수선하다. 고른 값은 그대로 두어
+   * 3D 로 돌아가면 핀이 되살아난다.
+   */
+  const effectiveLabelMode: IsoLabelMode =
+    viewMode === "flat" && labelMode === "pin" ? "text" : labelMode;
 
   /**
    * **배율은 여기 없다.** 예전에는 `unit` 에 배율을 곱했는데, 글자 크기는 CSS 로
@@ -144,6 +159,31 @@ export function VpcIsoMap({
     };
   }, [frameSize, scene.viewBox]);
 
+  /**
+   * 실제로 그리는 캔버스 — 라벨 층까지 담도록 넓힌 프레임.
+   *
+   * **두 렌더러가 같은 값을 받아야 한다.** 여백을 렌더러 안에서 붙이면 SVG 판만
+   * 넓어져 WebGL 로 토글할 때 도식이 그 차이만큼 밀린다. 프레임을 맞추는 것이
+   * 두 판을 나란히 비교하는 전제이므로 계산을 여기 한 곳에 둔다.
+   *
+   * 여백은 **표시 방식과 무관하게 항상** 붙인다. 핀일 때만 넓히면 텍스트·가리기로
+   * 바꾸는 순간 캔버스가 줄면서 도식이 위로 뛴다.
+   */
+  const canvasBox = useMemo(
+    () => padViewBoxForLabels(frame ?? scene.viewBox),
+    [frame, scene.viewBox],
+  );
+
+  /**
+   * 핀 배치도 두 렌더러가 나눠 쓴다. 각도가 바뀌면 앵커가 움직이므로 회전 중에도
+   * 다시 계산되는데, 노드 수만큼의 사각형 겹침 검사라 씬 재계산에 묻힌다.
+   */
+  const pins = useMemo(
+    () =>
+      effectiveLabelMode === "pin" ? buildIsoPins(scene.nodes, canvasBox) : [],
+    [effectiveLabelMode, scene.nodes, canvasBox],
+  );
+
   return (
     <IsoMap
       scene={scene}
@@ -154,7 +194,11 @@ export function VpcIsoMap({
       onZoomChange={setZoom}
       yawDeg={yawDeg}
       onYawChange={setYawDeg}
-      frame={frame}
+      frame={canvasBox}
+      labelMode={labelMode}
+      effectiveLabelMode={effectiveLabelMode}
+      onLabelModeChange={setLabelMode}
+      pins={pins}
       hoveredId={hoveredId}
       onHoverChange={setHoveredId}
       rendererMode={rendererMode}
@@ -162,10 +206,12 @@ export function VpcIsoMap({
       showGrid={showGrid}
       onShowGridChange={setShowGrid}
       webglCanvas={
-        webgl && frame ? (
+        webgl ? (
           <IsoMapThree
             solid={solid}
-            frame={frame}
+            frame={canvasBox}
+            labelMode={effectiveLabelMode}
+            pins={pins}
             zoom={zoom}
             unit={projection.unit}
             heightUnit={projection.heightUnit}

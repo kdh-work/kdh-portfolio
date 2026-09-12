@@ -16,7 +16,7 @@ import type {
  *    비례가 어긋난다. `viewBox` 는 그대로 두고 `width`/`height` 만 곱하면
  *    글자까지 함께 커지고, 배율을 바꿔도 씬을 다시 만들지 않는다.
  * 2. **스크롤바를 두지 않는다.** 바깥을 보는 방법은 Space + 드래그(이동),
- *    Space + 휠(확대·축소), 그리고 맞춤 버튼이다. `overflow: hidden` 이어도
+ *    Space + 휠(확대·축소), 그리고 배율 값 누르기(전체 맞춤)다. `overflow: hidden` 이어도
  *    엘리먼트는 여전히 스크롤 컨테이너라 `scrollLeft`/`scrollTop` 은 동작한다.
  *
  * Space 를 수정 키로 쓰는 이유는 맨 드래그가 이미 회전이고 맨 휠이 페이지
@@ -236,6 +236,14 @@ export function useMapViewport({ zoom, onZoomChange, content }: Options) {
     center();
   }, [applyZoom, center, fitScale]);
 
+  /*
+   * 값 손잡이에서 맞춤을 부르려면 최신 `fit` 이 필요한데, 손잡이의 핸들러는
+   * 포인터 리스너를 붙이는 동안 한 번 만들어져 오래 산다. ref 로 들어 두면
+   * 핸들러를 다시 만들지 않고도 그때그때의 맞춤 배율을 쓴다.
+   */
+  const fitRef = useRef(fit);
+  fitRef.current = fit;
+
   /* ── Space 수정 키 ─────────────────────────────────────────── */
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -356,8 +364,15 @@ export function useMapViewport({ zoom, onZoomChange, content }: Options) {
         window.removeEventListener("pointerup", onUp);
         window.removeEventListener("pointercancel", onUp);
         releaseCapture(handle, pointerId);
-        // 끌지 않고 눌렀다 뗀 것은 누르기로 보고 100% 로 되돌린다.
-        if (!moved) applyZoom(1);
+        /*
+         * 끌지 않고 눌렀다 뗀 것은 누르기로 보고 **맞춤 배율**로 되돌린다.
+         *
+         * 예전에는 Figma 관례대로 100% 였는데, 그러면 전체를 한눈에 담는 방법이
+         * 이 손잡이 바깥의 [맞춤] 버튼에만 남는다. 100% 는 정지 배율에 있어
+         * [+] [−] 로도 닿지만 맞춤은 맵마다 달라지는 계산값이라 다른 길이 없다.
+         * 둘 중 손잡이에 둘 값은 다른 길이 없는 쪽이다.
+         */
+        if (!moved) fitRef.current();
         setScrubbing(false);
       };
 
@@ -379,7 +394,7 @@ export function useMapViewport({ zoom, onZoomChange, content }: Options) {
       }
       if (event.key === "Home" || event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        applyZoom(1);
+        fitRef.current();
       }
     },
     [applyZoom, stepZoom],
