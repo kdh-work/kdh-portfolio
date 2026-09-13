@@ -9,7 +9,7 @@ export const profile: Profile = {
     { label: "4년 9개월", note: "2021.12 ~ 재직 중" },
     { label: "Vue 3 · TypeScript", note: "실무 주력" },
     { label: "React · Next.js", note: "개인 프로젝트" },
-    { label: "B2B 관리자 콘솔", note: "담당 도메인" },
+    { label: "B2B 엔터프라이즈 콘솔", note: "담당 도메인" },
   ],
   email: "kdhtoon@gmail.com",
   location: "경기도 수원시",
@@ -65,7 +65,7 @@ export const careerFacts: CareerFact[] = [
   {
     term: "담당 도메인",
     description:
-      "클라우드 관리 · 통합 모니터링 · DevOps 콘솔. 경력 전체가 B2B 관리자 콘솔과 데스크톱 환경입니다.",
+      "클라우드 관리 · 통합 모니터링 · DevOps 콘솔. 경력 전체가 B2B 엔터프라이즈 웹 콘솔과 데스크톱 환경입니다. 권한에 따라 화면이 분기되는 단일 콘솔과 접속 경로가 분리된 콘솔을 모두 담당했습니다.",
   },
   {
     term: "주력 스택",
