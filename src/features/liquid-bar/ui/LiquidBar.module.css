@@ -1,0 +1,27 @@
+.experiment { padding-bottom: 48px; }
+.toolbar { position: sticky; top: var(--safe-top); z-index: 2; padding: 14px 0; background: var(--paper); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; align-items: center; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.actions button, .actions select { font: inherit; font-size: 13px; border: 1px solid var(--rule); color: var(--ink); background: var(--paper); padding: 6px 12px; cursor: pointer; }
+.actions button[aria-pressed="true"] { background: var(--signal-bg); border-color: var(--signal); color: var(--signal); }
+.actions button:disabled, .actions select:disabled { opacity: .5; cursor: default; }
+.actions label { font-size: 12px; color: var(--ink-2); }
+.toolbar > span, .hint { font-size: 12px; color: var(--muted); }
+.hint { margin-top: 16px; }
+.variant { margin-top: 48px; padding-bottom: 40px; border-bottom: 1px solid var(--rule-soft); }
+.variant h2 { font-size: 19px; }
+.variant > p { margin: 12px 0 24px; max-width: 65ch; font-size: 14.5px; color: var(--ink-2); }
+.tanks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.sample { min-width: 0; }
+.water { height: 170px; background: var(--signal-bg); position: relative; overflow: hidden; border: 1px solid var(--rule); }
+.water svg { display: block; width: 100%; height: 100%; }
+.water path { fill: var(--tone); }
+.fixedText { position: absolute; inset: 38% 0 10%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ink); background: var(--paper); margin: 0 22%; }
+.fixedText strong { font-size: 30px; line-height: 1.2; }
+.fixedText span { font-size: 12px; }
+.caption { display: flex; justify-content: space-between; gap: 8px; padding-top: 10px; font-size: 13px; }
+.pipe { display: flex; gap: 2px; }
+.pipe .water { height: 48px; border: 0; }
+.legend { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; font-size: 13px; }
+.legend i { display: inline-block; height: 8px; width: 8px; margin-right: 6px; }
+.legend b { margin-left: 6px; }
+@media (max-width: 600px) { .tanks { grid-template-columns: repeat(2, minmax(0, 1fr)); } .water { height: 145px; } .toolbar { position: static; } }

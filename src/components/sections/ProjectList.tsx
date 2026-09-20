@@ -1,4 +1,5 @@
 import type { Project } from "@/content/types";
+import Link from "next/link";
 import { ShotGrid } from "@/components/media/ShotGrid";
 import styles from "./Projects.module.css";
 
@@ -28,6 +29,16 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                 </li>
               ))}
             </ul>
+            {project.links ? (
+              <ul className={styles.links}>
+                {project.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href}>{link.label} →</Link>
+                    {link.note ? <span>{link.note}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             {project.shots ? <ShotGrid shots={project.shots} note={project.shotsNote} /> : null}
             <p className={styles.stack}>{project.stack}</p>
           </div>

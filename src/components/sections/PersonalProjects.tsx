@@ -1,4 +1,7 @@
 import { personalProjects } from "@/content/personalProjects";
+import { liquidCopy } from "@/content/liquidExperiment";
+import Link from "next/link";
+import styles from "./Projects.module.css";
 import { ProjectList } from "./ProjectList";
 import block from "./Block.module.css";
 
@@ -14,6 +17,11 @@ export function PersonalProjects() {
           익히고 있습니다. 두 프로젝트 모두 진행 중입니다.
         </p>
         <ProjectList projects={personalProjects} />
+        <div className={styles.experiment}>
+          <h3>{liquidCopy.mark}</h3>
+          <p>{liquidCopy.link.note}</p>
+          <Link href={liquidCopy.link.href}>{liquidCopy.link.label} →</Link>
+        </div>
       </div>
     </section>
   );

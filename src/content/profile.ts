@@ -27,7 +27,7 @@ export const companies: Company[] = [
       {
         name: "OKESTRO CMP 클라우드 통합 관리 솔루션",
         period: "2026.01 ~ 진행 중",
-        role: "플랫폼 연결 설정 · 관리 화면, 자원 관계도 도식화",
+        role: "플랫폼 연결 설정 · 개요 화면 인터랙션 · 자원 관계도",
       },
       {
         name: "하나금융TI 통합 모니터링 솔루션 VISTA",

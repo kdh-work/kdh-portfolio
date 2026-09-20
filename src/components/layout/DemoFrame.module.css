@@ -116,3 +116,11 @@
   font-size: 20px;
   margin-bottom: calc(var(--unit) * 2);
 }
+
+.noteGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-top: 32px; }
+.noteGrid h3 { font-size: 16px; margin-bottom: 12px; }
+.noteGrid p { color: var(--ink-2); font-size: 14.5px; }
+.aside { border-top: 1px solid var(--rule); padding: 32px 0 56px; }
+.aside h2 { font-size: 18px; }
+.aside p { color: var(--ink-2); margin: 12px 0; max-width: 65ch; font-size: 14.5px; }
+@media (max-width: 680px) { .noteGrid { grid-template-columns: 1fr; } }

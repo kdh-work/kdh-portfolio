@@ -50,6 +50,8 @@ export type Project = {
   shotsNote?: string;
   /** 사례 연구 등 같은 페이지 내 참조 링크 */
   detailHref?: string;
+  /** 프로젝트에 관련된 별도 데모·실험 페이지 */
+  links?: { href: string; label: string; note?: string }[];
 };
 
 export type CaseStudyStage = {

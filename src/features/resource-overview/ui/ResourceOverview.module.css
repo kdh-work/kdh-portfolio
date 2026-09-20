@@ -1,0 +1,44 @@
+.demo { margin-bottom: 24px; }
+.toolbar, .buttons, .controls, .panelHead, .widthTools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.toolbar, .panelHead, .widthTools { justify-content: space-between; }
+.demo button { border: 1px solid var(--rule); background: var(--paper); color: var(--ink-2); padding: 6px 10px; cursor: pointer; font-size: 13px; }
+.demo button:hover { border-color: var(--signal); }
+.demo button[aria-pressed="true"] { background: var(--signal-bg); border-color: var(--signal); color: var(--signal); }
+.demo button:disabled, .demo button[aria-disabled="true"] { opacity: .4; cursor: default; }
+.instructions { margin: 16px 0 24px; font-size: 13px; color: var(--muted); max-width: 80ch; }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; align-items: start; margin-bottom: 20px; }
+.panel { grid-column: span var(--span); border: 1px solid var(--rule); min-width: 0; background: var(--paper); }
+.panel[data-over="true"] { outline: 2px dashed var(--signal); outline-offset: 3px; }
+.panelHead { background: var(--panel); padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+.panelHead h2 { font-size: 16px; }
+.position { font-size: 12px; color: var(--muted); }
+.demo .grip { touch-action: none; cursor: grab; min-width: 36px; }
+.grip:active { cursor: grabbing; }
+.panelBody { padding: 20px; }
+.hint { font-size: 12px; color: var(--muted); }
+.bar { display: flex; gap: 2px; height: 22px; margin: 16px 0; }
+.demo .bar button { min-width: 0; padding: 0; border: 0; }
+.bar button[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+.statuses { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 8px; }
+.status { border: 1px solid var(--rule-soft); padding: 10px; }
+.status[data-active="true"] { border-color: var(--signal); background: var(--signal-bg); }
+.demo .statusButton { border: 0; padding: 0; text-align: left; width: 100%; background: transparent; color: var(--ink); }
+.statusButton span { display: block; font-size: 12px; }
+.statusButton strong { display: block; font-size: 27px; font-weight: 650; margin: 4px 0; }
+.statusButton small { font-size: 12px; margin-left: 5px; font-weight: 400; }
+.statusButton i { display: inline-block; width: 7px; height: 7px; margin-right: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.demo .chips button { font-size: 11px; padding: 2px 5px; }
+.rows { margin-top: 12px; display: grid; }
+.demo .row { width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 12px; padding: 14px 8px; border: 0; border-bottom: 1px solid var(--rule-soft); }
+.row small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+.row strong { text-align: right; font-variant-numeric: tabular-nums; }
+.demo .row[data-highlight="true"] { background: var(--signal-bg); box-shadow: inset 3px 0 var(--signal); }
+.selectedTitle { font-size: 15px; margin-bottom: 16px; }
+.detail { margin: 0 0 16px; }
+.detail div { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--rule-soft); font-size: 13px; }
+.detail dd { margin: 0; font-variant-numeric: tabular-nums; }
+.empty { padding: 20px 0; font-size: 14px; color: var(--muted); }
+.widthTools { border-top: 1px solid var(--rule-soft); padding: 8px 16px; }
+.notice { min-height: 24px; font-size: 12px; color: var(--signal); margin-top: 6px; }
+@media (max-width: 700px) { .panel { grid-column: span 12; } .panelBody { padding: 14px; } .widthTools { display: none; } }

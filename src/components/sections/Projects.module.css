@@ -72,3 +72,9 @@
   color: var(--muted);
   line-height: 1.65;
 }
+
+.links { margin-top: 20px; display: grid; gap: 12px; font-size: 14px; }
+.links span { display: block; margin-top: 3px; color: var(--muted); font-size: 13px; }
+.experiment { padding-top: 28px; font-size: 14px; }
+.experiment h3 { font-size: 16px; }
+.experiment p { margin: 8px 0; color: var(--muted); }

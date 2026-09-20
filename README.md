@@ -2,6 +2,23 @@
 
 Next.js 16 App Router · TypeScript · CSS Modules · Three.js(자원 관계도 WebGL 렌더러에만, 지연 로드)
 
+기준일: 2026-09-19. 현재 소스와 Git 이력(문서 갱신 전 HEAD `c3d43e6`)을 대조했다.
+
+## 문서 안내
+
+- [260919_handbook](./260919_handbook.md): 프로젝트 목적, 기능, 구조, 작업 이력, 유지보수·검증 안내
+- [HANDBOOK](./HANDBOOK.md): 사이트에 실린 경력·프로젝트 소개 문구 모음
+- 로컬 작업 인수인계: 상위 폴더 `../HANDOFF.md` (이 Git 저장소 밖에 있음)
+- 상위 폴더 `portfolio-react-README.md`와 압축파일은 초기 이식 자료다. 현재 구현은 이 README와 소스를 기준으로 한다.
+
+## 현재 구현 범위
+
+메인 포트폴리오, 설정 위저드(`/demo`), 자원 관계도(`/iso-map`),
+자원 현황·섹션 배치(`/resource-overview`), 개인 수면 실험(`/experiments/liquid-bar`)의 다섯 페이지가 있다.
+실제 주소에는 `/kdh-portfolio`가 앞에 붙는다. 위저드의 저장은 브라우저 메모리에서
+완료 화면으로 이동하는 데모이며 서버 저장·새로고침 후 복원은 구현하지 않았다.
+관계도는 가상 데이터로 동작하고, 자원 클릭 결과를 데모 아래 패널에 표시한다.
+
 ## 실행
 
 ```bash
@@ -11,8 +28,8 @@ npm run build      # 정적 빌드 → out/
 npm run typecheck  # 타입 검사
 ```
 
-린트 스크립트는 두지 않았다. `tsconfig` 를 `strict` + `noUncheckedIndexedAccess`
-로 조여 두어 `typecheck` 가 대신한다.
+린트와 자동 테스트 스크립트는 아직 없다. `typecheck`는 `strict` +
+`noUncheckedIndexedAccess` 설정의 타입 검사이며, 린트나 동작 테스트를 대체하지 않는다.
 
 Node 22 이상이 필요하다 (`.nvmrc` 참고, `nvm use`).
 
@@ -36,12 +53,16 @@ src/
     page.tsx               포트폴리오 본문
     demo/page.tsx          설정 위저드 데모
     iso-map/page.tsx       자원 관계도 데모 + 라벨 배치 검토 기록
+    resource-overview/     자원 현황·필터링·섹션 배치 데모
+    experiments/liquid-bar/  개인 SVG 수면 실험
 
   content/                 콘텐츠 데이터. 지원처가 바뀌면 여기만 수정한다
     types.ts               콘텐츠 타입 정의
     profile.ts             기본 정보 · 회사 · 경력 요약
     caseStudy.ts           VISTA 설정 구조 재설계 서사
     isoMap.ts              자원 관계도 입력 데이터(가상) · 문구 · 라벨 검토 기록
+    resourceOverview.ts    공개용 가상 수량 · 자원 현황 설명 · 설계 기록
+    liquidExperiment.ts    개인 수면 실험 설명과 비교안
     workProjects.ts        실무 프로젝트 5건
     personalProjects.ts    개인 프로젝트 2건 · 기술 스택 · 미경험 영역
 
@@ -56,6 +77,8 @@ src/
   features/iso-map/        자원 관계도. 3계층 경계를 디렉토리로 분리했다
     scene/                 프로바이더 무관. 도메인을 전혀 모른다
       types.ts             장면 모델 (IsoScene / IsoNode / IsoZone / IsoTone)
+      pins.ts              핀 배치 · 상세 카드 기하
+      text.ts              텍스트 폭 추정 · 말줄임
       projection.ts        축측 투영 · 박스 3면 · 엘보 · 바닥 텍스트 행렬
     vpc/                   VPC 어댑터. 도메인 지식이 여기에만 있다
       sourceTypes.ts       입력 타입 (자원 맵 응답의 부분집합)
@@ -63,6 +86,11 @@ src/
     ui/
       IsoMap.tsx           SVG 렌더러. IsoScene 을 받아 그리기만 한다
       VpcIsoMap.tsx        어댑터 래퍼 (모드·배율·시점·렌더러 상태)
+      IsoMapStage.tsx      선택 자원 표시 패널
+      useMapViewport.ts    확대 · 전체 맞춤 · Space + 드래그 이동
+      HistoryReport.tsx    검토 기록 공통 프레임
+      ControlHistory.tsx   조작 개선 기록
+      PinStudy.tsx         핀 · 카드 개선 기록
       useYawDrag.ts        끌어서 회전. 두 렌더러가 공유한다
       labels.ts            박스 이름 줄임. 두 렌더러가 공유한다
       LabelStudy.tsx       라벨 배치 검토 도식. 같은 투영 함수로 그린다
@@ -119,7 +147,7 @@ public/assets/             스크린샷 (WebP, 1620px)
 **두 렌더러가 하나의 배치를 그린다** — 어댑터가 같은 레이아웃을 두 형태로
 내보낸다. `IsoScene` 은 화면 좌표까지 계산된 SVG path 이고, `IsoScene.solid` 는
 투영 전 그리드 좌표다(WebGL 은 투영을 카메라가 하므로 후자가 필요하다). 레이아웃
-계산이 한 곳뿐이라 두 렌더러가 어긋날 수 없다. `solid` 는 배율·시야각과 무관해서
+계산이 한 곳뿐이라 두 렌더러가 같은 배치 규칙을 사용한다. 카메라·프레임·DOM 갱신 시점의 차이는 별도로 검증해야 한다. `solid` 는 배율·시야각과 무관해서
 한 번만 만든다.
 
 **아이소메트릭은 직교 카메라의 특수한 경우다** — SVG 투영식과 카메라 파라미터를
@@ -140,7 +168,33 @@ public/assets/             스크린샷 (WebP, 1620px)
 - [x] 위저드 UI: StepTabs · CombinationMatrix · SectionForm · FieldControl · TracePanel · ResetDialog
 - [x] GitHub Pages 배포 워크플로우
 - [x] 자원 관계도 이식 (`features/iso-map`) — 3D·2D · 시점 회전 · 라벨 배치 검토 기록
-- [ ] 이력서·경력기술서 PDF 연결 (`profile.docsHref` 를 채우면 연락 섹션에 링크가 나타난다)
+- [ ] 이력서·경력기술서 PDF 연결 (`profile.docsHref` 설정과 `SiteFooter.tsx`의 PDF 블록 주석 해제가 모두 필요하다)
 - [ ] 모델 계층 단위 테스트 (Vitest) — `resolveSections`, `rules`, `projection`, `buildVpcLayout`
 - [x] 자원 관계도 Three.js 비교 구현 — 토글 뒤 지연 로드(gzip 121KB 별도 청크), 박스 이름은 HTML 오버레이, 바닥 이름은 캔버스 텍스처
 - [ ] WebView 셸 연동: 안드로이드 뒤로 가기 ↔ 히스토리, safe-area 주입, 공유 시트
+
+## 관계도 조작과 렌더러 차이
+
+- 기본 SVG: 드래그로 회전, Space + 드래그로 이동, Space + 휠로 커서 중심 확대·축소.
+- 배율 값 클릭은 전체 맞춤, 값 드래그는 연속 배율 조정이다. 값에 포커스한 상태에서 방향키·+/−는 배율 조정, Home·Enter·Space는 전체 맞춤이다.
+- SVG 핀은 상세 카드로 펼쳐지고 카드에서 자원 선택을 전달한다. WebGL 핀은 직접 자원 선택을 전달하며 상세 카드는 없다.
+- 평면도는 SVG로 표시하며 핀 설정은 텍스트로 대체된다. 3D로 돌아오면 선택했던 핀 설정이 복구된다.
+- WebGL은 같은 핀 배치를 오버레이로 사용한다. 렌더러 생성 → 지오메트리 → 크기·카메라 갱신을 `useLayoutEffect` 순서로 처리해 첫 진입 빈 화면과 확대 중 어긋남을 방지한다.
+- `/iso-map`에는 조작, 핀, 렌더러 비교, 구획 이름 배치의 검토 기록 네 종류가 있다.
+
+## 검증 범위
+
+타입 검사는 `npm run typecheck`, 정적 산출물 생성은 `npm run build`로 확인한다.
+자동 테스트 프레임워크는 아직 없다. 포인터 캡처·회전·핀 클릭·확대 동기화는 실제
+브라우저 입력으로 확인해야 하며, 타입 검사만으로 정상 동작을 보장하지 않는다.
+README의 번들 크기·픽셀 오차 수치는 과거 작업 기록이며 이번 문서 갱신에서 재측정하지 않았다.
+
+
+## 개요 화면 데모와 개인 실험 (2026-09-19 추가)
+
+- `features/resource-overview/model/layout.ts`: 배치 이동·저장값 검증. `ui/ResourceOverview.tsx`는 필터, 유형 강조·상세, 포인터 이동·폭 조절, 키보드 조작과 배치 복원을 담당한다.
+- 그리드는 순서 변경과 반폭·전체 폭으로 축약했다. 실제 제품의 자유 좌표 배치를 그대로 이식한 것은 아니다. 700px 이하에서는 한 열이다.
+- 배치와 마지막 모드만 `portfolio:overview-layout:v1`에 저장한다. 그리드·상하 이동은 독립적이며 필터·상세·되돌리기 이력은 방문 중에만 유지한다. 손상된 저장값은 기본 배치로 복구한다.
+- `features/liquid-bar/model/wave.ts`: SVG 수면 경로. `ui/LiquidBar.tsx`: 단일 rAF, 스크롤 입력, 정지·세기 조절, IntersectionObserver, reduced-motion 변경 및 탭 숨김 대응. 안정화 후 루프를 멈춘다.
+- 두 페이지는 `components/layout/StudyFrame.tsx`와 기존 `DemoFrame.module.css`를 공유한다. 회사 원본 HTML·API·판정 규칙은 포함하지 않는다.
+- CMP의 새 페이지 링크는 `workProjects.ts`의 `links`, 개인 실험 진입점은 `liquidExperiment.ts`에서 관리한다.
