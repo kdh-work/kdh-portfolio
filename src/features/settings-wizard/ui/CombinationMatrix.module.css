@@ -20,13 +20,25 @@
   padding: 9px 4px;
 }
 
+/* table-layout: fixed 는 첫 행의 폭만 읽는다. 본문 행 제목(tbody th)에 폭을 주면
+   무시되고 네 열이 똑같이 나뉘어, 좁은 화면에서 "네트워크" 가 칸 안에서 쪼개진다. */
+.table thead th:first-child {
+  width: 31%;
+}
+
 .table tbody th {
   font-size: 14px;
   font-weight: 600;
   text-align: left;
   padding: 0 12px;
   color: var(--ink);
-  width: 31%;
+}
+
+/* 320px 기기의 데모 카드 안에서는 첫 열이 72px 까지 줄어, 좌우 여백 12px 로는 "네트워크" 가 들어가지 않는다. */
+@media (max-width: 400px) {
+  .table tbody th {
+    padding: 0 8px;
+  }
 }
 
 .cell {

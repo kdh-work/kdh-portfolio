@@ -1,7 +1,8 @@
 .grid {
   margin-top: calc(var(--unit) * 3);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  /* 본문 폭이 300px 보다 좁은 화면(320px 기기)에서는 칸을 본문 폭까지만 둔다. 그대로 두면 가로로 넘친다. */
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: calc(var(--unit) * 3);
 }
 
