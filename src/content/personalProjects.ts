@@ -148,6 +148,7 @@ export const techGroups: TechGroup[] = [
         description: "Vite, Webpack, Yarn Berry PnP, pnpm, ESLint, Prettier, Husky, MSW",
       },
       { term: "협업", description: "Jira, Confluence, GitLab, Bitbucket" },
+      { term: "AI 도구", description: "Claude(주력), Cursor" },
     ],
   },
   {
