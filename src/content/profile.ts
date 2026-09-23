@@ -68,11 +68,6 @@ export const careerFacts: CareerFact[] = [
       "클라우드 관리 · 통합 모니터링 · DevOps 콘솔. 경력 전체가 B2B 엔터프라이즈 웹 콘솔과 데스크톱 환경입니다. 권한에 따라 화면이 분기되는 단일 콘솔과 접속 경로가 분리된 콘솔을 모두 담당했습니다.",
   },
   {
-    term: "주력 스택",
-    description:
-      "Vue 3 Composition API와 TypeScript로 4년, 개인 프로젝트에서 React 19와 Next.js 15로 약 1년.",
-  },
-  {
     term: "일하는 방식",
     description:
       "얽힌 도메인 규칙을 화면 구조로 정리하고, 공통 기반과 판단 근거를 문서로 남깁니다. 기존 코드를 이어받아 구현하며 드러난 문제를 개선하는 일이 많았고, 최근에는 기획·설계 단계부터 참여해 구현 가능성과 API·데이터 구조를 미리 검토합니다.",
@@ -81,6 +76,11 @@ export const careerFacts: CareerFact[] = [
     term: "AI 활용",
     description:
       "작업의 크기와 불확실성에 따라 활용 방식을 나눕니다. 작은 수정은 자연어로 요청해 바로 고치고, 처음 다루는 기술은 제 방법과 AI 제안을 비교해 판단하며, 큰 작업은 규칙·계획·검토 기준을 먼저 세운 뒤 진행합니다. 화면 시안은 여러 안을 빠르게 만들어 비교할 때 씁니다. 최종 설계와 품질 판단은 직접 합니다.",
+  },
+  {
+    term: "주력 스택",
+    description:
+      "Vue 3 Composition API와 TypeScript로 4년, 개인 프로젝트에서 React 19와 Next.js 15로 약 1년.",
   },
   {
     term: "학력",
