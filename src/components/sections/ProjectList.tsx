@@ -16,19 +16,44 @@ export function ProjectList({ projects }: { projects: Project[] }) {
           <div>
             <h3 className={styles.name}>{project.name}</h3>
             <p className={styles.role}>{project.role}</p>
-            <ul className={styles.points}>
-              {project.points.map((point, index) => (
-                <li key={point}>
-                  {point}
-                  {index === 0 && project.detailHref ? (
-                    <>
-                      {" "}
-                      <a href={project.detailHref}>(사례 연구)</a>
-                    </>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
+            {project.points ? (
+              <ul className={styles.points}>
+                {project.points.map((point, index) => (
+                  <li key={point}>
+                    {point}
+                    {index === 0 && project.detailHref ? (
+                      <>
+                        {" "}
+                        <a href={project.detailHref}>(사례 연구)</a>
+                      </>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {project.groups ? (
+              <ol className={styles.groups}>
+                {project.groups.map((group) => (
+                  <li key={group.title} className={styles.group}>
+                    <h4 className={styles.groupTitle}>{group.title}</h4>
+                    <p className={styles.groupSummary}>{group.summary}</p>
+                    {group.points.length > 0 ? (
+                      <details className={styles.more}>
+                        <summary>
+                          세부 근거 {group.points.length}건
+                          <span className="sr"> — {group.title}</span>
+                        </summary>
+                        <ul className={styles.points}>
+                          {group.points.map((point) => (
+                            <li key={point}>{point}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            ) : null}
             {project.links ? (
               <ul className={styles.links}>
                 {project.links.map((link) => (

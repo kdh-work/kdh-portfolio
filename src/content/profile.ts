@@ -32,7 +32,7 @@ export const companies: Company[] = [
       {
         name: "하나금융TI 통합 모니터링 솔루션 VISTA",
         period: "2023.07 ~ 2026.03",
-        role: "장치·플랫폼 통합 설정 파트 리드",
+        role: "장치·플랫폼 통합 설정 파트 프론트엔드 단독 담당",
       },
       {
         name: "KB국민은행 IQ+ DevOps 시스템 구축",

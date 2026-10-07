@@ -66,6 +66,83 @@
   background: var(--muted);
 }
 
+/* 항목이 많은 프로젝트: 주제 제목과 요약은 늘 보이고, 근거는 펼쳐서 본다. */
+.groups {
+  margin-top: calc(var(--unit) * 2.5);
+  counter-reset: group;
+}
+
+.group {
+  counter-increment: group;
+}
+
+.group + .group {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.groupTitle {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.groupTitle::before {
+  content: counter(group) ".";
+  margin-right: 6px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.groupSummary {
+  margin-top: 4px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.more {
+  margin-top: 4px;
+}
+
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0;
+  font-size: 13px;
+  color: var(--signal);
+  cursor: pointer;
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more summary::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.more[open] summary::before {
+  transform: rotate(45deg);
+}
+
+.more summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.more .points {
+  margin-top: 8px;
+}
+
 .stack {
   margin-top: calc(var(--unit) * 2.5);
   font-size: 13px;

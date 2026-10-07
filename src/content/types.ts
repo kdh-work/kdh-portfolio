@@ -38,13 +38,23 @@ export type Shot = {
   caption: string;
 };
 
+/** 항목이 많은 프로젝트를 주제별로 묶는다. 요약은 늘 보이고, 근거는 펼쳐서 본다. */
+export type PointGroup = {
+  title: string;
+  summary: string;
+  /** 비어 있으면 요약만 보인다 */
+  points: string[];
+};
+
 export type Project = {
   id: string;
   name: string;
   period: string;
   meta: string;
   role: string;
-  points: string[];
+  /** groups 가 있으면 둘 중 하나만 쓴다 */
+  points?: string[];
+  groups?: PointGroup[];
   stack: string;
   shots?: Shot[];
   shotsNote?: string;
