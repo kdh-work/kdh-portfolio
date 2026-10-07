@@ -80,7 +80,7 @@ export const careerFacts: CareerFact[] = [
   {
     term: "주력 스택",
     description:
-      "Vue 3 Composition API와 TypeScript로 4년, 개인 프로젝트에서 React 19와 Next.js 15로 약 1년.",
+      "Vue 3 Composition API와 TypeScript 실무 4년차, 개인 프로젝트에서 React와 Next.js 1년차.",
   },
   {
     term: "학력",

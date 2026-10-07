@@ -68,15 +68,15 @@ export const workProjects: Project[] = [
     detailHref: "#case",
     points: [
       "설정 구조 재설계로 등록 단계 7단계 → 2단계",
-      "공통 컴포넌트 라이브러리를 대부분 직접 설계·구현하고 프로젝트 후반 약 1년간 유지보수 담당",
+      "초기 개발 중 UI 라이브러리를 PrimeVue에서 Ant Design Vue로 교체하며 공통 컴포넌트·화면 구성 전환에 참여(3명)하고, 이후 공통 컴포넌트 약 34종 대부분을 직접 설계·구현. 프로젝트 후반 약 1년간 유지보수 담당",
       "화면 기획 개선 제안으로 동일 API 중복 호출을 2회 이상에서 1회로 단축",
       "클라우드 플랫폼 라우팅을 SPA 구조로 전환해 초기화·URL 이동 이슈 해결",
-      "Infinite scroll + virtual scroll과 pagination 성능 비교 후, 데이터 규모에 따라 편차가 큰 전자보다 일관된 인터랙션 성능을 내는 후자를 운영 기준으로 판단 (체크박스 전체 선택 소요 시간 최대 72.3% 단축)",
+      "무한 스크롤 목록의 전체 선택 처리 시간을 50~1,000건 구간별로 측정. 가상 스크롤을 적용해도 건수에 따라 392 → 1,368ms로 늘어나, 한 번에 불러오는 건수를 규칙으로 제한하는 pagination을 운영 기준으로 판단",
       "프론트엔드 인수인계 문서 중 통합 파트 전체 작성 (v1.1 2025.07 / v1.2 2025.12)",
       "사용자 교육이 제공되지 않는 환경을 전제로, 별도 안내 없이 다음 행동을 판단할 수 있는 구조를 기준으로 설계",
     ],
     stack:
-      "Vue 3 · TypeScript · TanStack Query · Pinia · PrimeVue · ECharts · Vite · Yarn Berry · MSW · ESLint · Husky · Bitbucket · Jira",
+      "Vue 3 · TypeScript · TanStack Query · Pinia · Ant Design Vue · ECharts · Vite · Yarn Berry · MSW · ESLint · Husky · Bitbucket · Jira",
   },
   {
     id: "kb",
@@ -104,7 +104,7 @@ export const workProjects: Project[] = [
       "삭제된 이벤트가 활성 상태로 남는 이슈의 원인을 데이터 구조·기능 흐름 기준으로 파악하고 해결 방법 제시",
       "메트릭 단위 자동 환산 처리로 표시 영역을 벗어나는 이슈 해결",
       "유효성 메시지 처리를 공통 함수로 분리해 재사용성 확보",
-      "테스트 시나리오 작성 및 QA 수행, 통과율 98%",
+      "테스트 시나리오 작성 및 QA 수행",
     ],
     stack: "Vue 2 · JavaScript · ECharts · npm · pnpm · GitLab · Bitbucket",
   },

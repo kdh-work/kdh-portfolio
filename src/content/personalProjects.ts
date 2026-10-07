@@ -8,7 +8,7 @@ export const personalProjects: Project[] = [
     name: "Robot Fleet Console — 로봇 플릿 관제 콘솔",
     period: "2026.06 ~ 진행 중",
     meta: "기획 · 설계 · 개발 단독",
-    role: "실무 모니터링 경험을 기반으로 대규모 제조·물류 현장의 관제 시나리오를 직접 설계. 공장 4곳, 로봇 3종. 프론트엔드 약 4,350 line.",
+    role: "실무 모니터링 경험을 기반으로 대규모 제조·물류 현장의 관제 시나리오를 직접 설계. 공장 4곳, 로봇 3종.",
     points: [
       "도메인 단위 features 아키텍처로 분리 (fleet / floor / sites / deployment / flow-map / monitoring)",
       "Next.js API Routes를 Mock BFF로 구성해 백엔드 의존 없이 화면·상태 구조 검증",
@@ -77,7 +77,7 @@ export const personalProjects: Project[] = [
     name: "My Games — 플랫폼 통합 게임 라이브러리",
     period: "2026.05 ~ 진행 중",
     meta: "기획 · FE · BE · 로컬 인프라 단독",
-    role: "외부 플랫폼에서 소유 게임을 가져와 저장하고, 수동 등록 게임과 함께 조회하는 라이브러리. 프론트엔드 약 4,000 line.",
+    role: "외부 플랫폼에서 소유 게임을 가져와 저장하고, 수동 등록 게임과 함께 조회하는 라이브러리.",
     points: [
       "외부 API 호출과 DB 조회를 화면 단위로 분리 — 동기화 화면은 방금 받은 응답을 그대로 보여주고, 라이브러리 화면은 저장본만 조회해 재호출하지 않음",
       "같은 게임 목록이 두 화면에 나오므로, 지금 보는 것이 방금 받은 외부 응답인지 DB 저장본인지 각 화면 상단에 명시해 사용자가 데이터 기준을 혼동하지 않도록 함",
@@ -141,7 +141,7 @@ export const techGroups: TechGroup[] = [
       { term: "상태", description: "TanStack Query, Pinia, Vuex" },
       {
         term: "UI · 시각화",
-        description: "Ant Design Vue, PrimeVue, ECharts, vue-grid-layout",
+        description: "Ant Design Vue, ECharts, vue-grid-layout",
       },
       {
         term: "빌드 · 품질",
@@ -152,7 +152,7 @@ export const techGroups: TechGroup[] = [
     ],
   },
   {
-    title: "개인 프로젝트 · 약 1년",
+    title: "개인 프로젝트 · 1년차",
     entries: [
       { term: "프레임워크", description: "React 19 / 18, Next.js 15 App Router" },
       {
