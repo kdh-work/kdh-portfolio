@@ -37,6 +37,46 @@
   font-weight: 800;
 }
 
+/* 맨 위 요약 — 긴 소개와 검토 기록을 읽기 전에 결론부터 본다 */
+.summary {
+  margin: calc(var(--unit) * 3) 0 0;
+  max-width: 78ch;
+  border-top: 1px solid var(--rule);
+}
+
+.summary > div {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.summary dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.summary dd {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+@media (max-width: 560px) {
+  .summary > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+.summaryNav {
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
 .lede {
   margin-top: calc(var(--unit) * 3);
   color: var(--ink-2);

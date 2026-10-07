@@ -49,6 +49,14 @@
   margin-right: 4px;
 }
 
+.more {
+  margin-top: calc(var(--unit) * 1.5);
+}
+
+.moreGrid {
+  margin-top: 0;
+}
+
 .note {
   margin-top: calc(var(--unit) * 2);
   font-size: 12.5px;

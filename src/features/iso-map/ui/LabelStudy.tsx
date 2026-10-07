@@ -9,6 +9,7 @@ import type {
   IsoScreenPoint,
 } from "../scene/types";
 import { labelStudy } from "@/content/isoMap";
+import { Fold } from "@/components/ui/Fold";
 import styles from "./LabelStudy.module.css";
 
 /**
@@ -226,25 +227,27 @@ export function LabelStudy() {
     <div className={styles.root}>
       <p className={styles.lede}>{labelStudy.lede}</p>
 
-      <ol className={styles.grid}>
-        {labelStudy.variants.map((variant) => (
-          <li
-            key={variant.id}
-            className={`${styles.card} ${variant.verdict === "chosen" ? styles.cardChosen : ""}`}
-          >
-            <div className={styles.shot}>
-              <Stage variantId={variant.id} />
-            </div>
-            <h3 className={styles.title}>
-              {variant.title}
-              {variant.verdict === "chosen" && (
-                <span className={styles.badge}>채택</span>
-              )}
-            </h3>
-            <p className={styles.note}>{variant.note}</p>
-          </li>
-        ))}
-      </ol>
+      <Fold label={`검토한 배치안 ${labelStudy.variants.length}개 보기`}>
+        <ol className={styles.grid}>
+          {labelStudy.variants.map((variant) => (
+            <li
+              key={variant.id}
+              className={`${styles.card} ${variant.verdict === "chosen" ? styles.cardChosen : ""}`}
+            >
+              <div className={styles.shot}>
+                <Stage variantId={variant.id} />
+              </div>
+              <h3 className={styles.title}>
+                {variant.title}
+                {variant.verdict === "chosen" && (
+                  <span className={styles.badge}>채택</span>
+                )}
+              </h3>
+              <p className={styles.note}>{variant.note}</p>
+            </li>
+          ))}
+        </ol>
+      </Fold>
 
       <p className={styles.closing}>{labelStudy.closing}</p>
     </div>

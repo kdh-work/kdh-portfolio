@@ -1,6 +1,7 @@
 import type { Project } from "@/content/types";
 import Link from "next/link";
 import { ShotGrid } from "@/components/media/ShotGrid";
+import { Fold } from "@/components/ui/Fold";
 import styles from "./Projects.module.css";
 
 /** 실무·개인 프로젝트가 같은 레이아웃을 쓴다. 차이는 데이터에만 있다. */
@@ -38,17 +39,13 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                     <h4 className={styles.groupTitle}>{group.title}</h4>
                     <p className={styles.groupSummary}>{group.summary}</p>
                     {group.points.length > 0 ? (
-                      <details className={styles.more}>
-                        <summary>
-                          세부 근거 {group.points.length}건
-                          <span className="sr"> — {group.title}</span>
-                        </summary>
-                        <ul className={styles.points}>
+                      <Fold label={`세부 근거 ${group.points.length}건`} context={group.title}>
+                        <ul className={`${styles.points} ${styles.foldPoints}`}>
                           {group.points.map((point) => (
                             <li key={point}>{point}</li>
                           ))}
                         </ul>
-                      </details>
+                      </Fold>
                     ) : null}
                   </li>
                 ))}
@@ -64,7 +61,9 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                 ))}
               </ul>
             ) : null}
-            {project.shots ? <ShotGrid shots={project.shots} note={project.shotsNote} /> : null}
+            {project.shots ? (
+              <ShotGrid shots={project.shots} visible={2} note={project.shotsNote} />
+            ) : null}
             <p className={styles.stack}>{project.stack}</p>
           </div>
         </article>

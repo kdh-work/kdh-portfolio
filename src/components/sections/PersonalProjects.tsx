@@ -13,8 +13,8 @@ export function PersonalProjects() {
           개인 프로젝트
         </h2>
         <p className={block.lede}>
-          실무는 Vue였고, React와 Next.js는 개인 프로젝트에서 기획부터 단독으로 진행하며
-          익히고 있습니다. 두 프로젝트 모두 진행 중입니다.
+          React와 Next.js로 기획부터 단독으로 맡은 프로젝트입니다. 상태·API·도메인 구조를
+          직접 설계했고, 두 프로젝트 모두 진행 중입니다.
         </p>
         <ProjectList projects={personalProjects} />
         <div className={styles.experiment}>

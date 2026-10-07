@@ -1,3 +1,4 @@
+import { Fold } from "@/components/ui/Fold";
 import styles from "./HistoryReport.module.css";
 
 /**
@@ -35,67 +36,69 @@ export function HistoryReport({
     <div className={styles.root}>
       <p className={styles.lede}>{data.lede}</p>
 
-      <ol className={styles.rounds}>
-        {data.rows.map((row) => (
-          <li key={row.symptom} className={styles.round}>
-            <p className={styles.symptom}>{row.symptom}</p>
-            <div className={styles.detail}>
-              <span className={styles.tag}>원인</span>
-              <p>{row.cause}</p>
-            </div>
-            <div className={styles.detail}>
-              <span className={`${styles.tag} ${styles.tagFix}`}>고침</span>
-              <p>{row.fix}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-
-      {data.thread && (
-        <section className={styles.thread} aria-labelledby={threadHeadingId}>
-          <h3 id={threadHeadingId}>{data.thread.title}</h3>
-          {data.thread.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
+      <Fold label={`증상·원인·고침 ${data.rows.length}건과 교훈 ${data.lessons.length}가지 보기`}>
+        <ol className={styles.rounds}>
+          {data.rows.map((row) => (
+            <li key={row.symptom} className={styles.round}>
+              <p className={styles.symptom}>{row.symptom}</p>
+              <div className={styles.detail}>
+                <span className={styles.tag}>원인</span>
+                <p>{row.cause}</p>
+              </div>
+              <div className={styles.detail}>
+                <span className={`${styles.tag} ${styles.tagFix}`}>고침</span>
+                <p>{row.fix}</p>
+              </div>
+            </li>
           ))}
+        </ol>
 
-          {measurement && (
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <caption>{measurement.caption}</caption>
-                <thead>
-                  <tr>
-                    {measurement.head.map((cell) => (
-                      <th key={cell} scope="col">
-                        {cell}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {measurement.rows.map(([label, ...cells]) => (
-                    <tr key={label}>
-                      <th scope="row">{label}</th>
-                      {cells.map((cell, index) => (
-                        <td key={`${label}-${measurement.head[index + 1]}`}>
+        {data.thread && (
+          <section className={styles.thread} aria-labelledby={threadHeadingId}>
+            <h3 id={threadHeadingId}>{data.thread.title}</h3>
+            {data.thread.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+
+            {measurement && (
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <caption>{measurement.caption}</caption>
+                  <thead>
+                    <tr>
+                      {measurement.head.map((cell) => (
+                        <th key={cell} scope="col">
                           {cell}
-                        </td>
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      )}
+                  </thead>
+                  <tbody>
+                    {measurement.rows.map(([label, ...cells]) => (
+                      <tr key={label}>
+                        <th scope="row">{label}</th>
+                        {cells.map((cell, index) => (
+                          <td key={`${label}-${measurement.head[index + 1]}`}>
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
 
-      <ul className={styles.lessons}>
-        {data.lessons.map((lesson) => (
-          <li key={lesson.title}>
-            <b>{lesson.title}.</b> {lesson.body}
-          </li>
-        ))}
-      </ul>
+        <ul className={styles.lessons}>
+          {data.lessons.map((lesson) => (
+            <li key={lesson.title}>
+              <b>{lesson.title}.</b> {lesson.body}
+            </li>
+          ))}
+        </ul>
+      </Fold>
 
       <p className={styles.closing}>{data.closing}</p>
     </div>

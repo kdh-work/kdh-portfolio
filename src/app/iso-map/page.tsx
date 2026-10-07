@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { isoMapIntro, isoMapLayers, vpcResourceMap } from "@/content/isoMap";
+import { isoMapIntro, isoMapLayers, isoMapSummary, vpcResourceMap } from "@/content/isoMap";
 import { profile } from "@/content/profile";
 import { ControlHistory } from "@/features/iso-map/ui/ControlHistory";
 import { LabelStudy } from "@/features/iso-map/ui/LabelStudy";
@@ -30,6 +30,21 @@ export default function IsoMapPage() {
       <div className={styles.intro}>
         <div className="wrap">
           <h1>{isoMapIntro.title}</h1>
+          <dl className={styles.summary}>
+            {isoMapSummary.map((item) => (
+              <div key={item.term}>
+                <dt>{item.term}</dt>
+                <dd>{item.description}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className={styles.summaryNav}>
+            과정은 아래 검토 기록에 있습니다 —{" "}
+            <a href="#control-history-h">회전·확대·이동</a> ·{" "}
+            <a href="#pin-study-h">자원 이름 배치</a> ·{" "}
+            <a href="#renderer-h">SVG와 WebGL 비교</a> ·{" "}
+            <a href="#label-study-h">구획 이름 배치</a>
+          </p>
           {isoMapIntro.paragraphs.map((paragraph) => (
             <p key={paragraph} className={styles.lede}>
               {paragraph}

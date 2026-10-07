@@ -1,4 +1,5 @@
 import { rendererComparison as copy } from "@/content/isoMap";
+import { Fold } from "@/components/ui/Fold";
 import styles from "./RendererComparison.module.css";
 
 /**
@@ -12,26 +13,28 @@ export function RendererComparison() {
     <div className={styles.root}>
       <p className={styles.lede}>{copy.lede}</p>
 
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th scope="col">항목</th>
-              <th scope="col">SVG</th>
-              <th scope="col">WebGL</th>
-            </tr>
-          </thead>
-          <tbody>
-            {copy.rows.map((row) => (
-              <tr key={row.aspect}>
-                <th scope="row">{row.aspect}</th>
-                <td>{row.svg}</td>
-                <td>{row.webgl}</td>
+      <Fold label={`항목별 비교표 ${copy.rows.length}개 보기`}>
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th scope="col">항목</th>
+                <th scope="col">SVG</th>
+                <th scope="col">WebGL</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {copy.rows.map((row) => (
+                <tr key={row.aspect}>
+                  <th scope="row">{row.aspect}</th>
+                  <td>{row.svg}</td>
+                  <td>{row.webgl}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Fold>
 
       <p className={styles.closing}>{copy.closing}</p>
     </div>

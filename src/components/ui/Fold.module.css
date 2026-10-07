@@ -1,0 +1,41 @@
+.fold {
+  margin-top: 4px;
+}
+
+.fold summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0;
+  font-size: 13px;
+  color: var(--signal);
+  cursor: pointer;
+  list-style: none;
+}
+
+.fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.fold summary::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.fold[open] summary::before {
+  transform: rotate(45deg);
+}
+
+.fold summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fold[open] > summary {
+  margin-bottom: 8px;
+}

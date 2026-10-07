@@ -101,46 +101,9 @@
   color: var(--ink-2);
 }
 
-.more {
-  margin-top: 4px;
-}
-
-.more summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 3px 0;
-  font-size: 13px;
-  color: var(--signal);
-  cursor: pointer;
-  list-style: none;
-}
-
-.more summary::-webkit-details-marker {
-  display: none;
-}
-
-.more summary::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  transform: rotate(-45deg);
-  transition: transform 0.15s;
-}
-
-.more[open] summary::before {
-  transform: rotate(45deg);
-}
-
-.more summary:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.more .points {
-  margin-top: 8px;
+/* 펼치기 안의 목록은 요약 바로 아래에 붙인다. 간격은 Fold 가 준다. */
+.foldPoints {
+  margin-top: 0;
 }
 
 .stack {

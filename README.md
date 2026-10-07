@@ -69,6 +69,7 @@ src/
   components/
     layout/                SiteHeader · SiteFooter(연락)
     media/                 Lightbox (확대 보기) · ShotGrid (스크린샷 격자)
+    ui/                    Fold (요약 아래 근거를 펼쳐 보는 details 공용)
     sections/              페이지 섹션 단위 컴포넌트
       Hero · CareerSummary · MatrixPreview · CaseStudy · IsoMapPreview
       WorkProjects · PersonalProjects (ProjectList 공용) · TechStack

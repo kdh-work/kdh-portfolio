@@ -10,8 +10,8 @@ export function WorkProjects() {
           실무 프로젝트
         </h2>
         <p className={block.lede}>
-          경력 전체가 B2B 엔터프라이즈 웹 콘솔과 데스크톱 환경입니다. 기존 코드와 운영을
-          이어받아 점진적으로 개선하는 성격의 프로젝트가 많았습니다.
+          항목이 많은 프로젝트는 주제별로 묶었습니다. 각 주제의 세부 근거는 펼쳐서 볼 수
+          있습니다.
         </p>
         <ProjectList projects={workProjects} />
       </div>
