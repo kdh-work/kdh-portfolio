@@ -152,7 +152,7 @@ export const techGroups: TechGroup[] = [
     ],
   },
   {
-    title: "개인 프로젝트 · 1년차",
+    title: "개인 프로젝트",
     entries: [
       { term: "프레임워크", description: "React 19 / 18, Next.js 15 App Router" },
       {

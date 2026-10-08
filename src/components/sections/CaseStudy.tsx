@@ -15,7 +15,7 @@ export function CaseStudy() {
     <section className={block.block} id="case" aria-labelledby="case-h">
       <div className="wrap">
         <h2 id="case-h" className={block.heading}>
-          사례 연구 — 설정 구조를 두 차례 다시 설계한 과정
+          사례 연구 — 설정 구조를 단계적으로 재설계한 과정
         </h2>
         <p className={block.lede}>{caseStudyIntro}</p>
 

@@ -14,7 +14,7 @@ export const profile: Profile = {
   email: "kdhtoon@gmail.com",
   location: "경기도 수원시",
   education: "동국대학교 컴퓨터공학전공 학사",
-  updatedAt: "2026.09",
+  updatedAt: "2026.10",
 };
 
 export const companies: Company[] = [
@@ -32,7 +32,7 @@ export const companies: Company[] = [
       {
         name: "하나금융TI 통합 모니터링 솔루션 VISTA",
         period: "2023.07 ~ 2026.03",
-        role: "장치·플랫폼 통합 설정 파트 프론트엔드 단독 담당",
+        role: "통합 설정 파트 프론트엔드 단독 담당",
       },
       {
         name: "KB국민은행 IQ+ DevOps 시스템 구축",
@@ -75,12 +75,12 @@ export const careerFacts: CareerFact[] = [
   {
     term: "AI 활용",
     description:
-      "작업의 크기와 불확실성에 따라 활용 방식을 나눕니다. 작은 수정은 자연어로 요청해 바로 고치고, 처음 다루는 기술은 제 방법과 AI 제안을 비교해 판단하며, 큰 작업은 규칙·계획·검토 기준을 먼저 세운 뒤 진행합니다. 화면 시안은 여러 안을 빠르게 만들어 비교할 때 씁니다. 최종 설계와 품질 판단은 직접 합니다.",
+      "작업의 크기와 불확실성에 따라 활용 방식을 나눕니다. 작은 수정은 자연어 요청으로 초안을 빠르게 만들고 검토해 반영하며, 처음 다루는 기술은 제 방법과 AI 제안을 비교해 판단하고, 큰 작업은 규칙·계획·검토 기준을 먼저 세운 뒤 진행합니다. 화면 시안은 여러 안을 빠르게 만들어 비교할 때 씁니다. 구조와 데이터 흐름에 영향을 주는 변경과 최종 품질은 직접 판단하고 검증합니다.",
   },
   {
     term: "주력 스택",
     description:
-      "Vue 3 Composition API와 TypeScript 실무 4년차, 개인 프로젝트에서 React와 Next.js 1년차.",
+      "Vue 3 Composition API와 TypeScript 실무 4년차, 개인 프로젝트에서 React와 Next.js 사용 중.",
   },
   {
     term: "학력",
