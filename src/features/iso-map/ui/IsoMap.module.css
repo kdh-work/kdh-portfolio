@@ -140,6 +140,12 @@
   pointer-events: none !important;
 }
 
+.notice {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .placeholder {
   display: flex;
   align-items: center;

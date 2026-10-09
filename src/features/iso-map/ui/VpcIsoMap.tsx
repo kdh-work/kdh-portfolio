@@ -37,6 +37,23 @@ type Props = {
   onNodeClick?: (node: IsoNode) => void;
 };
 
+const WEBGL_UNAVAILABLE_NOTICE = "현재 환경에서는 WebGL을 사용할 수 없어 SVG로 표시합니다.";
+
+/**
+ * 렌더러를 바꾸기 전에 WebGL 컨텍스트를 실제로 만들 수 있는지 본다. 확인용
+ * 컨텍스트는 바로 놓아 준다 — 브라우저의 컨텍스트 상한(대개 16개)을 쓰지 않도록.
+ */
+function canUseWebGL(): boolean {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    return gl !== null;
+  } catch {
+    return false;
+  }
+}
+
 const BASE_UNIT = 34;
 const BASE_HEIGHT_UNIT = 44;
 
@@ -66,6 +83,15 @@ export function VpcIsoMap({
   const [yawDeg, setYawDeg] = useState(ISO_DEFAULT_YAW_DEG);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [rendererMode, setRendererMode] = useState<"svg" | "webgl">("svg");
+  /** 이 환경에서 WebGL 을 쓸 수 없다고 확인됐는지. 한 번 확인되면 안내를 계속 둔다. */
+  const [webglUnavailable, setWebglUnavailable] = useState(false);
+  const changeRendererMode = (mode: "svg" | "webgl") => {
+    if (mode === "webgl" && (webglUnavailable || !canUseWebGL())) {
+      setWebglUnavailable(true);
+      return;
+    }
+    setRendererMode(mode);
+  };
   const [showGrid, setShowGrid] = useState(false);
   /**
    * 이름 표시 방식은 **두 렌더러가 공유한다** — 강조·격자와 같은 이유다. 한쪽만
@@ -202,7 +228,8 @@ export function VpcIsoMap({
       hoveredId={hoveredId}
       onHoverChange={setHoveredId}
       rendererMode={rendererMode}
-      onRendererModeChange={setRendererMode}
+      onRendererModeChange={changeRendererMode}
+      notice={webglUnavailable ? WEBGL_UNAVAILABLE_NOTICE : undefined}
       showGrid={showGrid}
       onShowGridChange={setShowGrid}
       webglCanvas={
@@ -220,6 +247,10 @@ export function VpcIsoMap({
             showGrid={showGrid}
             hoveredId={hoveredId}
             onHoverChange={setHoveredId}
+            onUnavailable={() => {
+              setRendererMode("svg");
+              setWebglUnavailable(true);
+            }}
             onNodeClick={
               onNodeClick
                 ? (id) => {

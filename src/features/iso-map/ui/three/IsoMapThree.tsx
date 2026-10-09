@@ -88,6 +88,8 @@ type Props = {
   hoveredId: string | null;
   onHoverChange: (id: string | null) => void;
   onNodeClick?: (id: string) => void;
+  /** WebGL 컨텍스트를 만들지 못했을 때 부른다. 바깥이 SVG 로 되돌린다. */
+  onUnavailable?: () => void;
 };
 
 /** SVG 판의 `.zone` stroke-width 와 같은 값(px). */
@@ -164,6 +166,7 @@ export function IsoMapThree({
   hoveredId,
   onHoverChange,
   onNodeClick,
+  onUnavailable,
 }: Props) {
   /* 끌어서 회전 — SVG 판과 같은 훅이라 조작감이 같다. */
   const drag = useYawDrag<HTMLDivElement>(yawDeg, onYawChange, !!onYawChange);
@@ -226,10 +229,19 @@ export function IsoMapThree({
     palette.current = readTonePalette();
     setPaletteState(palette.current);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-    });
+    /* WebGL 이 막힌 환경(하드웨어 가속 꺼짐, 원격 데스크톱, 일부 가상화)에서는 생성자가
+       던진다. 잡지 않으면 오류가 페이지 전체로 번지므로, 바깥에 알리고 여기서 멈춘다.
+       뒤의 effect 들은 렌더러가 없으면 건너뛴다. */
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+    } catch {
+      onUnavailable?.();
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     host.appendChild(renderer.domElement);
     renderer.domElement.className = styles.canvas ?? "";

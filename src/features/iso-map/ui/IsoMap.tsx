@@ -71,6 +71,8 @@ type Props = {
   showGrid: boolean;
   onShowGridChange: (show: boolean) => void;
   emptyMessage?: string;
+  /** 헤더 아래에 띄우는 안내 한 줄 (예: WebGL 을 쓸 수 없어 SVG 로 표시할 때) */
+  notice?: string;
   /** 노드에 커서·버튼 롤을 부여할지 여부 */
   clickable?: boolean;
   onNodeClick?: (node: IsoNode) => void;
@@ -119,6 +121,7 @@ export function IsoMap({
   showGrid,
   onShowGridChange,
   emptyMessage = "표시할 자원이 없습니다.",
+  notice,
   clickable = false,
   onNodeClick,
   canvasHeight,
@@ -537,6 +540,12 @@ export function IsoMap({
           </div>
         </div>
       </header>
+
+      {notice && (
+        <p className={styles.notice} role="status">
+          {notice}
+        </p>
+      )}
 
       {/*
         도식이 놓이는 뷰포트. 스크롤바를 두지 않고(`overflow: hidden`) 바깥은
