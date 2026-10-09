@@ -24,7 +24,8 @@ export type Company = {
   projects: { name: string; period: string; role: string }[];
 };
 
-export type CareerFact = { term: string; description: string };
+/** 한 줄 설명은 문자열, 항목별로 줄을 나눌 때는 배열 */
+export type CareerFact = { term: string; description: string | string[] };
 
 /** 스크린샷 한 장. width/height 는 레이아웃 밀림 방지를 위해 필수. */
 export type Shot = {

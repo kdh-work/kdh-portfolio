@@ -35,7 +35,17 @@ export function CareerSummary() {
           {careerFacts.map((fact) => (
             <div key={fact.term}>
               <dt>{fact.term}</dt>
-              <dd>{fact.description}</dd>
+              <dd>
+                {Array.isArray(fact.description) ? (
+                  <ul>
+                    {fact.description.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  fact.description
+                )}
+              </dd>
             </div>
           ))}
         </dl>

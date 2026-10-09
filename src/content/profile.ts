@@ -79,8 +79,7 @@ export const careerFacts: CareerFact[] = [
   },
   {
     term: "주력 스택",
-    description:
-      "Vue는 2022.07부터 실무에서 쓰고 있습니다. Vue 2로 시작해 2023.04부터 Vue 3, 2023.07부터 TypeScript를 함께 사용하고 있고, 개인 프로젝트에서는 React와 Next.js를 사용하고 있습니다.",
+    description: ["실무 — Vue, JavaScript, TypeScript", "개인 프로젝트 — React, Next.js, Vite"],
   },
   {
     term: "학력",
