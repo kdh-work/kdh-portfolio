@@ -63,27 +63,9 @@
   }
 }
 
-.basis {
-  margin: calc(var(--unit) * 6) 0 0;
-  padding: 0;
-}
-
-.basis blockquote {
-  margin: 0;
-  padding: calc(var(--unit) * 3) 0 calc(var(--unit) * 3) calc(var(--unit) * 4);
-  border-left: 2px solid var(--ink);
-}
-
-.basis blockquote p {
-  font-size: 17px;
-  line-height: 1.75;
-  color: var(--ink);
-  max-width: 58ch;
-}
-
-.basis figcaption {
-  margin-top: calc(var(--unit) * 2.5);
-  padding-left: calc(var(--unit) * 4);
+.basisNote {
+  margin-top: calc(var(--unit) * 3);
+  padding-left: calc(var(--unit) * 4 + 1px);
   font-size: 13.5px;
   color: var(--muted);
   max-width: 58ch;
@@ -91,13 +73,8 @@
 }
 
 @media (max-width: 640px) {
-  .basis blockquote,
-  .basis figcaption {
-    padding-left: calc(var(--unit) * 2.5);
-  }
-
-  .basis blockquote p {
-    font-size: 16px;
+  .basisNote {
+    padding-left: 0;
   }
 }
 
@@ -129,4 +106,16 @@
   margin-top: calc(var(--unit) * 3.5);
   color: var(--ink-2);
   max-width: 62ch;
+}
+
+.demo {
+  margin-top: calc(var(--unit) * 6);
+}
+
+.afterDemo {
+  margin-top: calc(var(--unit) * 6);
+}
+
+.afterDemo > .rule:first-child {
+  margin-top: 0;
 }

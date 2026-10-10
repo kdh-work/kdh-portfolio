@@ -97,3 +97,8 @@
   color: var(--ink-2);
   max-width: 44ch;
 }
+
+/* 항목이 두 줄로 넘어가도 어디서 다음 항목이 시작되는지 보이게 */
+.facts dd li + li {
+  margin-top: 6px;
+}

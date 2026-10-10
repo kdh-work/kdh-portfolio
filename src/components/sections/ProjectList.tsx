@@ -32,6 +32,15 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                 ))}
               </ul>
             ) : null}
+            {project.morePoints ? (
+              <Fold label={`그 외 ${project.morePoints.length}건`} context={project.name}>
+                <ul className={`${styles.points} ${styles.foldPoints}`}>
+                  {project.morePoints.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </Fold>
+            ) : null}
             {project.groups ? (
               <ol className={styles.groups}>
                 {project.groups.map((group) => (

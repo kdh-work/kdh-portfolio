@@ -1,5 +1,5 @@
 import {
-  basis,
+  basisNote,
   caseStudyIntro,
   implementation,
   layers,
@@ -7,6 +7,7 @@ import {
   resetRule,
   stages,
 } from "@/content/caseStudy";
+import { MatrixPreview } from "./MatrixPreview";
 import block from "./Block.module.css";
 import styles from "./CaseStudy.module.css";
 
@@ -36,12 +37,7 @@ export function CaseStudy() {
             </div>
           ))}
 
-          <figure className={styles.basis}>
-            <blockquote>
-              <p>{basis.quote}</p>
-            </blockquote>
-            <figcaption>{basis.caption}</figcaption>
-          </figure>
+          <p className={styles.basisNote}>{basisNote}</p>
 
           <div className={block.body}>
             <h3 className={styles.implTitle}>{implementation.title}</h3>
@@ -53,16 +49,24 @@ export function CaseStudy() {
                 </li>
               ))}
             </ul>
-            <p className={styles.rule}>{resetRule}</p>
-            <ul className={styles.result}>
-              {outcomes.map((outcome) => (
-                <li key={outcome.highlight}>
-                  {outcome.text} <b>{outcome.highlight}</b>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
+      </div>
+
+      {/* 데모는 패널 배경을 화면 전체 폭으로 깔아야 해서 .wrap 밖에 둔다 */}
+      <div className={styles.demo}>
+        <MatrixPreview />
+      </div>
+
+      <div className={`wrap ${styles.afterDemo}`}>
+        <p className={styles.rule}>{resetRule}</p>
+        <ul className={styles.result}>
+          {outcomes.map((outcome) => (
+            <li key={outcome.highlight}>
+              {outcome.text} <b>{outcome.highlight}</b>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

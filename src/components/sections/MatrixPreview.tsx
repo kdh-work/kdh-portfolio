@@ -8,7 +8,7 @@ import { resolveSections } from "@/features/settings-wizard/model/registry";
 import styles from "./MatrixPreview.module.css";
 
 /**
- * 메인 페이지의 축약 데모. 조합을 고르면 결정되는 섹션 구성만 보여준다.
+ * 사례 연구 안에 들어가는 축약 데모. 조합을 고르면 결정되는 섹션 구성만 보여준다.
  * 데이터는 데모 페이지와 같은 registry 를 읽으므로 두 화면이 어긋나지 않는다.
  */
 export function MatrixPreview() {
@@ -23,7 +23,7 @@ export function MatrixPreview() {
     <section className={styles.demo} aria-labelledby="demo-h">
       <div className="wrap">
         <div className={styles.head}>
-          <h2 id="demo-h">{copy.title}</h2>
+          <h3 id="demo-h">{copy.title}</h3>
           <p>{copy.lede}</p>
         </div>
 

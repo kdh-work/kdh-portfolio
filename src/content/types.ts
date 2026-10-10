@@ -55,6 +55,8 @@ export type Project = {
   role: string;
   /** groups 가 있으면 둘 중 하나만 쓴다 */
   points?: string[];
+  /** points 아래 펼쳐서 보는 나머지 항목 */
+  morePoints?: string[];
   groups?: PointGroup[];
   stack: string;
   shots?: Shot[];

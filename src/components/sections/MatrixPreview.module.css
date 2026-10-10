@@ -10,7 +10,7 @@
   margin-bottom: calc(var(--unit) * 5);
 }
 
-.head h2 {
+.head h3 {
   font-size: clamp(21px, 2.6vw, 27px);
 }
 
